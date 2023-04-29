@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#BA96F8"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/menuButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2sp"
+        android:layout_marginBottom="5sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <Button
+            android:id="@+id/dictionaryButton"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_marginStart="25dp"
+            android:background="#00FFFFFF"
+            app:icon="@drawable/dictionary_button"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="50sp"
+            app:iconTint="#200343" />
+
+        <Button
+            android:id="@+id/taskButton"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="25dp"
+            android:layout_toEndOf="@+id/dictionaryButton"
+            android:background="#00FFFFFF"
+            app:icon="@drawable/task_button"
+            app:iconGravity="textStart"
+            app:iconPadding="0sp"
+            app:iconSize="50sp"
+            app:iconTint="#200343" />
+
+        <Button
+            android:id="@+id/notesButton"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="25dp"
+            android:layout_toEndOf="@+id/taskButton"
+            android:background="#00FFFFFF"
+            android:gravity="center_horizontal"
+            app:icon="@drawable/notes_button"
+            app:iconGravity="textStart"
+            app:iconPadding="0sp"
+            app:iconSize="50sp"
+            app:iconTint="#200343" />
+
+        <Button
+            android:id="@+id/addSongButton"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="25dp"
+            android:layout_toEndOf="@+id/notesButton"
+            android:background="#00AED189"
+            app:icon="@drawable/add_song"
+            app:iconGravity="textStart"
+            app:iconPadding="0sp"
+            app:iconSize="50sp"
+            app:iconTint="#200343" />
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/songList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:dividerHeight="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/nowPlaying"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuButtons"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <RelativeLayout
+        android:id="@+id/nowPlaying"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

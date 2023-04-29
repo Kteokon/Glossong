@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:elevation="0dp">
+
+    <RelativeLayout
+        android:id="@+id/menuButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <Button
+            android:id="@+id/homeButton"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="25dp" />
+
+        <Button
+            android:id="@+id/updateButton"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="25dp"
+            android:layout_toEndOf="@+id/homeButton"
+            android:background="#00FFFFFF"
+            android:onClick="updateSong"
+            app:icon="@drawable/update_song"
+            app:iconGravity="textStart"
+            app:iconPadding="0sp"
+            app:iconSize="50sp"
+            app:iconTint="#8F94F8" />
+
+        <Button
+            android:id="@+id/notesButton"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="25dp"
+            android:layout_toEndOf="@+id/updateButton"
+            android:onClick="addUpdateNotes" />
+
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/nameTexts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:layout_marginBottom="10sp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/songLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuButtons">
+
+        <ScrollView
+            android:id="@+id/scrollView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/scrollView4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/songName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:isScrollContainer="true"
+                    android:text="Без названия"
+                    android:textColor="#000000"
+                    android:textSize="36sp" />
+            </HorizontalScrollView>
+        </ScrollView>
+
+        <ScrollView
+            android:id="@+id/scrollView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/scrollView6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scrollView6">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/songArtist"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="sans-serif-light"
+                    android:isScrollContainer="true"
+                    android:text="Исполнитель неизвестен"
+                    android:textColor="#000000"
+                    android:textSize="24sp" />
+            </HorizontalScrollView>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/songLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/playButtons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameTexts"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/songImage"
+            android:layout_width="250sp"
+            android:layout_height="250sp"
+            android:background="@drawable/song_image"
+            app:layout_constraintBottom_toTopOf="@+id/seekBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="243dp"
+            android:layout_height="21dp"
+            android:layout_marginTop="20dp"
+            android:progressTint="#8F94F8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/timeOver"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/timePassed"
+            app:layout_constraintTop_toBottomOf="@+id/songImage" />
+
+        <TextView
+            android:id="@+id/timePassed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:text="00:00"
+            android:textColor="#000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/seekBar"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/songImage"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/timeOver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:text="03:00"
+            android:textColor="#000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/seekBar"
+            app:layout_constraintTop_toBottomOf="@+id/songImage"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/playButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/textButtons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/songLayout">
+
+        <Button
+            android:id="@+id/playButton"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="75sp"
+            android:layout_height="75sp"
+            android:layout_margin="10sp"
+            android:onClick="playSong"
+            android:src="@drawable/play_button"
+            app:backgroundTint="#00BAA4FE"
+            app:icon="@drawable/play_button"
+            app:iconGravity="textEnd"
+            app:iconPadding="-8dp"
+            app:iconSize="125sp"
+            app:iconTint="#9095F9"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/skipRightButton"
+            app:layout_constraintStart_toEndOf="@+id/skipLeftButton"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/skipLeftButton"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:layout_toStartOf="@+id/playButton"
+            android:onClick="skipSong"
+            app:backgroundTint="#00FFFFFF"
+            app:icon="@drawable/skip_previous_button"
+            app:iconGravity="textEnd"
+            app:iconPadding="0dp"
+            app:iconSize="75sp"
+            app:iconTint="#9196FA"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/playButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/shuffleButton"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/shuffleButton"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_marginStart="10sp"
+            android:layout_toStartOf="@+id/skipLeftButton"
+            app:backgroundTint="#00FFFFFF"
+            app:icon="@drawable/shuffle_button"
+            app:iconGravity="textEnd"
+            app:iconPadding="0dp"
+            app:iconSize="50sp"
+            app:iconTint="#9196FA"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/skipLeftButton"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/skipRightButton"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:layout_toEndOf="@+id/playButton"
+            android:onClick="skipSong"
+            app:backgroundTint="#00FFFFFF"
+            app:icon="@drawable/skip_next_button"
+            app:iconGravity="textEnd"
+            app:iconPadding="0dp"
+            app:iconSize="75sp"
+            app:iconTint="#9196FA"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/loopButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/playButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.488" />
+
+        <Button
+            android:id="@+id/loopButton"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_marginEnd="10sp"
+            android:layout_toEndOf="@+id/skipRightButton"
+            app:backgroundTint="#00FFFFFF"
+            app:icon="@drawable/repeat_off_button"
+            app:iconGravity="textEnd"
+            app:iconPadding="0sp"
+            app:iconSize="50sp"
+            app:iconTint="#9196FA"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/skipRightButton"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RelativeLayout
+        android:id="@+id/textButtons"
+        android:layout_width="match_parent"
+        android:layout_height="65sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <Button
+            android:id="@+id/lyricsButton"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="25dp" />
+
+        <Button
+            android:id="@+id/translationButton"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="25dp"
+            android:textSelectHandleLeft="@drawable/shuffle_button"
+            android:textSelectHandleRight="@drawable/loop_button" />
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
