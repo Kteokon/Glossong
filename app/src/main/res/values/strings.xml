@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Glossong</string>
+    <string name="IAM_TOKEN">t1.9euelZqMk8uVy5WemZ7Mj5rKm56ake3rnpWak52bnpqXl8fPz52VysyQzprl8_dVbiJh-e8ROX9W_t3z9xUdIGH57xE5f1b-.qbSnJuax49iaNMQTCTSgYRj5IBiymAi0ITlMq9xj9EwAgDvJzt7-kmbuUYuOqQ5SqP24J-7z47SqHi4f86Z0Cw</string>
+    <string name="folderId">b1gahjn9ijhnvc78h7sh</string>
+    <string name="targetLanguageCode">ru</string>
+    <string name="yandex_translator_server_url">https://translate.api.cloud.yandex.net/translate/v2/translate</string>
+    <string name="theKey">AQVNwN2UTjKub9Iw5BTNBPyI8j-OqGUJhlMEAYEL</string>
 </resources>

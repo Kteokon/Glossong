@@ -19,6 +19,8 @@ import java.util.concurrent.ExecutionException;
 public class NoteActivity extends AppCompatActivity {
     public static final String NOTE_TEXT = "com.example.glossong.NOTE_TEXT";
 
+    NoteViewModel noteViewModel;
+
     Note note;
     Long songId;
     boolean isNew = false;
@@ -34,35 +36,39 @@ public class NoteActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        note = (Note) intent.getSerializableExtra("note");
+//        note = (Note) intent.getSerializableExtra("note");
         songId = intent.getLongExtra("songId", 0);
 
-        if (note == null) {
-            Log.d("mytag", "new note");
-            isNew = true;
-            textET.setText("");
-        }
-        else{
-            Log.d("mytag", "existed note of song " + note.getSongId());
-            textET.setText(note.getNoteText());
-        }
+        noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
+
+        noteViewModel.getNoteBySongId(songId).observe(this, new Observer<Note>() {
+            @Override
+            public void onChanged(Note _note) {
+                note = _note;
+                if (_note == null) {
+                    isNew = true;
+                    textET.setText("");
+                }
+                else {
+                    textET.setText(_note.getNoteText());
+                }
+            }
+        });
     }
 
     public void saveChanges(View v) {
         Intent intent = new Intent();
 
         String text = textET.getText().toString();
-        text = text.replaceAll(" ", "");
+        String checkText = text.replaceAll(" ", "");
 
-        NoteViewModel noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
-
-        if (!text.equals("")) {
+        if (!checkText.equals("")) {
             if (isNew) {
-                intent.putExtra(NoteActivity.NOTE_TEXT, text);
+                Note _note = new Note(text, songId);
+                noteViewModel.insert(_note);
             }
             else {
                 note.setNoteText(text);
-                Log.d("mytag", "" + note.getId() + " " + note.getNoteText() + " " + note.getSongId());
                 noteViewModel.update(note);
             }
         }

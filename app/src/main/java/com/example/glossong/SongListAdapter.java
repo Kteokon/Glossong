@@ -3,6 +3,8 @@ package com.example.glossong;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,13 +30,11 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Custom
     Context context;
     LayoutInflater inflater;
     boolean sorted = false;
-    ExoPlayer player;
 
-    public SongListAdapter(Context context, List<SongAndArtist> songs, ExoPlayer player) {
+    public SongListAdapter(Context context, List<SongAndArtist> songs) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.songs = songs;
-        this.player = player;
     }
 
     @NonNull
@@ -55,12 +55,13 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Custom
         holder.cl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyMediaPlayer.getInstance(context).release();
+//                MyMediaPlayer.getInstance(context);
                 MyMediaPlayer.nowPlaying = i;
+                Log.d("mytag", "nowplaying " + i);
 
                 Intent intent = new Intent(context, PlayerActivity.class);
-                intent.putExtra("songs", (Serializable) songs);
-                intent.putExtra("nowPlaying", i);
+//                intent.putExtra("songs", (Serializable) songs);
+//                intent.putExtra("nowPlaying", i);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

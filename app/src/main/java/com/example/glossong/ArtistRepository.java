@@ -40,10 +40,17 @@ public class ArtistRepository {
         new ArtistRepository.DeleteArtistTask(artistDAO).execute(artist);
     }
 
-    public LiveData<Artist> getArtistByName(String name) throws ExecutionException, InterruptedException {
+    public Long getArtistByName(String name){
         GetArtistByNameTask task = new GetArtistByNameTask(artistDAO);
-        LiveData<Artist> artist = task.execute(name).get();
-        return artist;
+        Long id = null;
+        try {
+            id = task.execute(name).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 
     public static class InsertArtistTask extends AsyncTask<Artist, Void, Long> {
@@ -88,7 +95,7 @@ public class ArtistRepository {
         }
     }
 
-    public static class GetArtistByNameTask extends AsyncTask<String, Void, LiveData<Artist>> {
+    public static class GetArtistByNameTask extends AsyncTask<String, Void, Long> {
         private ArtistDAO artistDAO;
 
         private GetArtistByNameTask(ArtistDAO artistDAO) {
@@ -96,9 +103,9 @@ public class ArtistRepository {
         }
 
         @Override
-        protected LiveData<Artist> doInBackground(String... strings) {
-            LiveData<Artist> artist = artistDAO.findByName(strings[0]);
-            return artist;
+        protected Long doInBackground(String... strings) {
+            Long id = artistDAO.findByName(strings[0]);
+            return id;
         }
     }
 }

@@ -8,7 +8,6 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.glossong.model.Note;
-import com.example.glossong.tuple.NoteTuple;
 
 import java.util.List;
 

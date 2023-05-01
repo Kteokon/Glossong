@@ -6,13 +6,7 @@ import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
 
 import com.example.glossong.dao.NoteDAO;
-import com.example.glossong.dao.SongDAO;
 import com.example.glossong.model.Note;
-import com.example.glossong.model.Song;
-import com.example.glossong.tuple.NoteTuple;
-
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class NoteRepository {
     NoteDAO noteDAO;

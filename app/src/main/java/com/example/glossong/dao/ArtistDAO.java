@@ -16,8 +16,8 @@ public interface ArtistDAO {
     @Query("SELECT * FROM artist")
     LiveData<List<Artist>> selectAll();
 
-    @Query("SELECT * FROM artist WHERE name=:name")
-    LiveData<Artist> findByName(String name);
+    @Query("SELECT id FROM artist WHERE name=:name")
+    Long findByName(String name);
 
     @Insert
     long insert(Artist artist);

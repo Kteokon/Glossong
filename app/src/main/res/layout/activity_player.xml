@@ -5,12 +5,15 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:elevation="0dp">
 
     <RelativeLayout
         android:id="@+id/menuButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -66,7 +69,7 @@
 
         <ScrollView
             android:id="@+id/scrollView6"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10sp"
             android:layout_marginEnd="10sp"
@@ -94,7 +97,7 @@
 
         <ScrollView
             android:id="@+id/scrollView4"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10sp"
             android:layout_marginEnd="10sp"
@@ -109,7 +112,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/songArtist"
+                    android:id="@+id/artistName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fontFamily="sans-serif-light"

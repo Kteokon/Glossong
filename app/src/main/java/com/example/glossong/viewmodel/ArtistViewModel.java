@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import com.example.glossong.ArtistRepository;
 import com.example.glossong.model.Artist;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class ArtistViewModel extends AndroidViewModel {
@@ -32,7 +33,7 @@ public class ArtistViewModel extends AndroidViewModel {
         this.repository.delete(artist);
     }
 
-    public LiveData<Artist> getArtistByName(String name) throws ExecutionException, InterruptedException {
+    public Long getArtistByName(String name) throws ExecutionException, InterruptedException {
         return this.repository.getArtistByName(name);
     }
 }

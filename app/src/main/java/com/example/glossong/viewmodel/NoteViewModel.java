@@ -8,9 +8,6 @@ import androidx.lifecycle.LiveData;
 
 import com.example.glossong.NoteRepository;
 import com.example.glossong.model.Note;
-import com.example.glossong.tuple.NoteTuple;
-
-import java.util.concurrent.ExecutionException;
 
 public class NoteViewModel extends AndroidViewModel {
     private NoteRepository repository;

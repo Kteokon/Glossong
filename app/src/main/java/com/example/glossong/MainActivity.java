@@ -3,7 +3,6 @@ package com.example.glossong;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,7 +24,6 @@ import com.example.glossong.model.SongAndArtist;
 import com.example.glossong.model.Song;
 import com.example.glossong.viewmodel.ArtistViewModel;
 import com.example.glossong.viewmodel.SongViewModel;
-import com.google.android.exoplayer2.ExoPlayer;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -41,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView songList;
     Button addSongButton, allNotesButton;
 
-    ExoPlayer player;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,13 +52,11 @@ public class MainActivity extends AppCompatActivity {
         addSongButton = findViewById(R.id.addSongButton);
         allNotesButton = findViewById(R.id.notesButton);
 
-        player = new ExoPlayer.Builder(this).build();
-
         songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
         songViewModel.getSongs().observe(this, new Observer<List<SongAndArtist>>() {
             @Override
             public void onChanged(List<SongAndArtist> songs) {
-                SongListAdapter adapter = new SongListAdapter(getApplicationContext(), songs, player);
+                SongListAdapter adapter = new SongListAdapter(getApplicationContext(), songs);
                 songList.setAdapter(adapter);
             }
         });
@@ -113,25 +107,21 @@ public class MainActivity extends AppCompatActivity {
                 retriever.setDataSource(properPath);
                 String songName = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
                 String artistName = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-                Long artistId = 1L;
-                if (songName == null) {
-                    songName = "Без названия";
+
+                Long artistId = null;
+                ArtistViewModel artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
+                try {
+                    artistId = artistViewModel.getArtistByName(artistName);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                if (artistName != null) {
-                    ArtistViewModel artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
-                    try {
-                        LiveData<Artist> artist = artistViewModel.getArtistByName(artistName);
-                        if (artist == null) {
-                            Artist newArtist = new Artist(artistName);
-                            artistId = artistViewModel.insert(newArtist);
-                        }
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    artistName = "Исполнитель неизвестен";
+                if (artistId == null) {
+                    Artist newArtist = new Artist(artistName);
+                    artistId = artistViewModel.insert(newArtist);
                 }
+
                 Log.d("mytag", "song title: " + songName);
                 Log.d("mytag", "song artist: " + artistName);
 
