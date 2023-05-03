@@ -7,13 +7,19 @@ import androidx.lifecycle.LiveData;
 
 import com.example.glossong.dao.NoteDAO;
 import com.example.glossong.model.Note;
+import com.example.glossong.model.NoteAndSong;
+import com.example.glossong.model.NoteWithSongAndArtist;
+
+import java.util.List;
 
 public class NoteRepository {
     NoteDAO noteDAO;
+    LiveData<List<NoteWithSongAndArtist>> notes;
 
     public NoteRepository(Application application) {
         MyRoomDB myRoomDB = MyRoomDB.get(application);
         this.noteDAO = myRoomDB.noteDAO();
+        this.notes = noteDAO.selectAllNotesWithSong();
     }
 
     public void insert(Note note) {
@@ -26,6 +32,10 @@ public class NoteRepository {
 
     public void delete(Note note) {
         new NoteRepository.DeleteNoteTask(noteDAO).execute(note);
+    }
+
+    public LiveData<List<NoteWithSongAndArtist>> getNotes() {
+        return this.notes;
     }
 
     public LiveData<Note> getNoteBySongId(Long id) {

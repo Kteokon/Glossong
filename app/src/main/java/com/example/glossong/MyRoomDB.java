@@ -9,6 +9,7 @@ import androidx.room.RoomDatabase;
 import com.example.glossong.dao.ArtistDAO;
 import com.example.glossong.dao.NoteDAO;
 import com.example.glossong.dao.SongDAO;
+import com.example.glossong.dao.WordDAO;
 import com.example.glossong.model.Artist;
 import com.example.glossong.model.Dictionary;
 import com.example.glossong.model.EngWord;
@@ -28,6 +29,7 @@ public abstract class MyRoomDB extends RoomDatabase {
     abstract SongDAO songDAO();
     abstract ArtistDAO artistDAO();
     abstract NoteDAO noteDAO();
+    abstract WordDAO wordDAO();
 
     private static final String DB_NAME = "glossong2.db";
     private static volatile MyRoomDB INSTANCE = null;

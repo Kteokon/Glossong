@@ -44,12 +44,21 @@
             app:iconTint="#8F94F8" />
 
         <Button
-            android:id="@+id/notesButton"
+            android:id="@+id/dictionaryButton"
             android:layout_width="50sp"
             android:layout_height="50sp"
             android:layout_centerVertical="true"
             android:layout_marginStart="25dp"
             android:layout_toEndOf="@+id/updateButton"
+            android:onClick="songDictionary" />
+
+        <Button
+            android:id="@+id/notesButton"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="25dp"
+            android:layout_toEndOf="@+id/dictionaryButton"
             android:onClick="addUpdateNotes" />
 
     </RelativeLayout>
@@ -325,17 +334,8 @@
             android:layout_width="50sp"
             android:layout_height="50sp"
             android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
             android:layout_marginStart="25dp" />
-
-        <Button
-            android:id="@+id/translationButton"
-            android:layout_width="50sp"
-            android:layout_height="50sp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="25dp"
-            android:textSelectHandleLeft="@drawable/shuffle_button"
-            android:textSelectHandleRight="@drawable/loop_button" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -81,6 +81,7 @@ public class UpdateSongActivity extends AppCompatActivity {
         ArtistViewModel artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
         artistId = artistViewModel.getArtistByName(newArtist);
         if (artistId == null) {
+            // TODO: если у прошлого исполнителя больше нет произведений, то обновить его имя на новое введённое
             Artist artist = new Artist(newArtist);
             artistId = artistViewModel.insert(artist);
         }

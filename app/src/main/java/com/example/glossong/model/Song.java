@@ -35,36 +35,11 @@ public class Song implements Serializable {
 
     private String translation;
 
-//    @Ignore
     public Song(@NonNull String source, String lyrics, String translation) {
         this.source = source;
         this.lyrics = lyrics;
         this.translation = translation;
     }
-
-//    @Ignore
-//    public Song(@NonNull Integer artistId, @NonNull String source, String lyrics, String translation) {
-//        this.artistId = artistId;
-//        this.source = source;
-//        this.lyrics = lyrics;
-//        this.translation = translation;
-//    }
-//
-//    @Ignore
-//    public Song(@NonNull String name, @NonNull String source, String lyrics, String translation) {
-//        this.name = name;
-//        this.source = source;
-//        this.lyrics = lyrics;
-//        this.translation = translation;
-//    }
-//
-//    public Song(@NonNull Integer artistId, @NonNull String name, @NonNull String source, String lyrics, String translation) {
-//        this.artistId = artistId;
-//        this.name = name;
-//        this.source = source;
-//        this.lyrics = lyrics;
-//        this.translation = translation;
-//    }
 
     public Long getId(){
         return this.id;

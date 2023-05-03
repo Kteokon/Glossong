@@ -8,6 +8,10 @@ import androidx.lifecycle.LiveData;
 
 import com.example.glossong.NoteRepository;
 import com.example.glossong.model.Note;
+import com.example.glossong.model.NoteAndSong;
+import com.example.glossong.model.NoteWithSongAndArtist;
+
+import java.util.List;
 
 public class NoteViewModel extends AndroidViewModel {
     private NoteRepository repository;
@@ -28,6 +32,10 @@ public class NoteViewModel extends AndroidViewModel {
 
     public void delete(Note note) {
         this.repository.delete(note);
+    }
+
+    public LiveData<List<NoteWithSongAndArtist>> getNotes() {
+        return this.repository.getNotes();
     }
 
     public LiveData<Note> getNoteBySongId(Long id) {

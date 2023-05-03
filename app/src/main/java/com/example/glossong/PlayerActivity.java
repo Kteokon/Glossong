@@ -2,12 +2,12 @@ package com.example.glossong;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.glossong.fragment.FullscreenDialog;
 import com.example.glossong.model.Artist;
 import com.example.glossong.model.SongAndArtist;
 import com.example.glossong.model.MyMediaPlayer;
@@ -46,7 +47,8 @@ public class PlayerActivity extends AppCompatActivity {
     SeekBar seekBar;
     TextView timePassedTV, timeOverTV, songTV, artistTV;
     Button playButton, shuffleButton, loopButton,
-            homeButton, updateButton, notesButton;
+            homeButton, updateButton, dictionaryButton,
+            notesButton, lyricsButton;
 
     ExoPlayer player;
     List<SongAndArtist> songs;
@@ -82,7 +84,6 @@ public class PlayerActivity extends AppCompatActivity {
             }
         });
 
-//        songs = (List<SongAndArtist>) intent.getSerializableExtra("songs");
         player = MyMediaPlayer.getInstance(this);
         nowPlaying = MyMediaPlayer.nowPlaying;
 
@@ -323,9 +324,6 @@ public class PlayerActivity extends AppCompatActivity {
             }
         });
 
-//        PlayerTask task = new PlayerTask();
-//        task.execute(songs);
-
         playButton = findViewById(R.id.playButton);
         shuffleButton = findViewById(R.id.shuffleButton);
         loopButton = findViewById(R.id.loopButton);
@@ -336,7 +334,9 @@ public class PlayerActivity extends AppCompatActivity {
         artistTV = findViewById(R.id.artistName);
         homeButton = findViewById(R.id.homeButton);
         updateButton = findViewById(R.id.updateButton);
+        dictionaryButton = findViewById(R.id.dictionaryButton);
         notesButton = findViewById(R.id.notesButton);
+        lyricsButton = findViewById(R.id.lyricsButton);
 
         Handler handler = new Handler();
         PlayerActivity.this.runOnUiThread(new Runnable() {
@@ -418,6 +418,24 @@ public class PlayerActivity extends AppCompatActivity {
                 player.play();
             }
         });
+
+        lyricsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialog = FullscreenDialog.newInstance(songs.get(nowPlaying).song.getId(), songs.get(nowPlaying).song.getLyrics(), songs.get(nowPlaying).song.getTranslation());
+                dialog.show(getSupportFragmentManager(), "tag");
+            }
+        });
+
+        dictionaryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), DictionaryActivity.class);
+                intent.putExtra("words", "song");
+                intent.putExtra("songId", songs.get(nowPlaying).song.getId());
+                startActivity(intent);
+            }
+        });
     }
 
     public void skipSong(View v){
@@ -459,6 +477,13 @@ public class PlayerActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void songDictionary(View v) {
+        Intent intent = new Intent(this, DictionaryActivity.class);
+        intent.putExtra("words", "song");
+        intent.putExtra("words", "song");
+        startActivity(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -493,35 +518,6 @@ public class PlayerActivity extends AppCompatActivity {
 
                 Log.d("mytag", "Updated");
             }
-        }
-    }
-
-    class PlayerTask extends AsyncTask<List<SongAndArtist>, Void, List<MediaItem>> {
-
-        @Override
-        protected List<MediaItem> doInBackground(List<SongAndArtist>... listOfSongs) {
-            List<SongAndArtist> _songs = listOfSongs[0];
-            List<MediaItem> playlist = new ArrayList<>();
-
-            for (SongAndArtist i: _songs) {
-                MediaItem item = new MediaItem.Builder()
-                    .setUri(i.song.getSource())
-                    .setMimeType(MimeTypes.BASE_TYPE_AUDIO)
-                    .build();
-                playlist.add(item);
-            }
-
-            return playlist;
-        }
-
-        @Override
-        protected void onPostExecute(List<MediaItem> playlist) {
-            super.onPostExecute(playlist);
-
-            player.setMediaItems(playlist, nowPlaying, 0);
-            player.prepare();
-
-            Log.d("mytag", "prepared " + MyMediaPlayer.nowPlaying);
         }
     }
 

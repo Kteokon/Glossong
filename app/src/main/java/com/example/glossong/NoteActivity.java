@@ -36,7 +36,6 @@ public class NoteActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-//        note = (Note) intent.getSerializableExtra("note");
         songId = intent.getLongExtra("songId", 0);
 
         noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);

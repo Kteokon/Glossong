@@ -3,6 +3,7 @@ package com.example.glossong;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.glossong.fragment.ChooseTaskDialog;
 import com.example.glossong.model.Artist;
 import com.example.glossong.model.SongAndArtist;
 import com.example.glossong.model.Song;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SongViewModel songViewModel;
     private RecyclerView songList;
-    Button addSongButton, allNotesButton;
+    Button addSongButton, dictionaryButton, taskButton, allNotesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         songList = findViewById(R.id.songList);
         songList.setLayoutManager(new LinearLayoutManager(this));
         addSongButton = findViewById(R.id.addSongButton);
+        dictionaryButton = findViewById(R.id.dictionaryButton);
+        taskButton = findViewById(R.id.taskButton);
         allNotesButton = findViewById(R.id.notesButton);
 
         songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
@@ -69,6 +73,31 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     PermissionUtils.requestPermissions(MainActivity.this, PERMISSION_STORAGE);
                 }
+            }
+        });
+
+        dictionaryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), DictionaryActivity.class);
+                intent.putExtra("words", "all");
+                startActivity(intent);
+            }
+        });
+
+        taskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialog = ChooseTaskDialog.newInstance();
+                dialog.show(getSupportFragmentManager(), "tag");
+            }
+        });
+
+        allNotesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), NotesActivity.class);
+                startActivity(intent);
             }
         });
     }
