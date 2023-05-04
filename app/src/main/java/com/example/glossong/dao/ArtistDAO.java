@@ -5,20 +5,14 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.glossong.model.Artist;
-
-import java.util.List;
+import com.example.glossong.model.ArtistAndSongs;
 
 @Dao
 public interface ArtistDAO {
-    @Query("SELECT * FROM artist")
-    LiveData<List<Artist>> selectAll();
-
-    @Query("SELECT id FROM artist WHERE name=:name")
-    Long findByName(String name);
-
     @Insert
     long insert(Artist artist);
 
@@ -27,4 +21,11 @@ public interface ArtistDAO {
 
     @Update
     void update(Artist... artists);
+
+    @Transaction
+    @Query("SELECT * FROM artist WHERE name=:name")
+    LiveData<ArtistAndSongs> findArtistByName(String name);
+
+    @Query("SELECT id FROM artist WHERE name=:name")
+    Long findArtistIdByName(String name);
 }

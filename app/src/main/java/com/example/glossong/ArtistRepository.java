@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import com.example.glossong.dao.ArtistDAO;
 import com.example.glossong.model.Artist;
+import com.example.glossong.model.ArtistAndSongs;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -40,8 +41,8 @@ public class ArtistRepository {
         new ArtistRepository.DeleteArtistTask(artistDAO).execute(artist);
     }
 
-    public Long getArtistByName(String name){
-        GetArtistByNameTask task = new GetArtistByNameTask(artistDAO);
+    public Long getArtistIdByName(String name){
+        GetArtistIdByNameTask task = new GetArtistIdByNameTask(artistDAO);
         Long id = null;
         try {
             id = task.execute(name).get();
@@ -51,6 +52,19 @@ public class ArtistRepository {
             e.printStackTrace();
         }
         return id;
+    }
+
+    public LiveData<ArtistAndSongs> getArtistByName(String name){
+        GetArtistByNameTask task = new GetArtistByNameTask(artistDAO);
+        LiveData<ArtistAndSongs> artist = null;
+        try {
+            artist = task.execute(name).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return artist;
     }
 
     public static class InsertArtistTask extends AsyncTask<Artist, Void, Long> {
@@ -95,7 +109,21 @@ public class ArtistRepository {
         }
     }
 
-    public static class GetArtistByNameTask extends AsyncTask<String, Void, Long> {
+    public static class GetArtistIdByNameTask extends AsyncTask<String, Void, Long> {
+        private ArtistDAO artistDAO;
+
+        private GetArtistIdByNameTask(ArtistDAO artistDAO) {
+            this.artistDAO = artistDAO;
+        }
+
+        @Override
+        protected Long doInBackground(String... strings) {
+            Long id = artistDAO.findArtistIdByName(strings[0]);
+            return id;
+        }
+    }
+
+    public static class GetArtistByNameTask extends AsyncTask<String, Void, LiveData<ArtistAndSongs>> {
         private ArtistDAO artistDAO;
 
         private GetArtistByNameTask(ArtistDAO artistDAO) {
@@ -103,9 +131,9 @@ public class ArtistRepository {
         }
 
         @Override
-        protected Long doInBackground(String... strings) {
-            Long id = artistDAO.findByName(strings[0]);
-            return id;
+        protected LiveData<ArtistAndSongs> doInBackground(String... strings) {
+            LiveData<ArtistAndSongs> artist = artistDAO.findArtistByName(strings[0]);
+            return artist;
         }
     }
 }

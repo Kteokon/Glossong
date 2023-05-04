@@ -2,6 +2,7 @@ package com.example.glossong;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
@@ -12,8 +13,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.glossong.model.Artist;
+import com.example.glossong.model.ArtistAndSongs;
 import com.example.glossong.model.TranslatorResponse;
 import com.example.glossong.model.YandexTranslation;
 import com.example.glossong.viewmodel.ArtistViewModel;
@@ -37,9 +40,11 @@ public class UpdateSongActivity extends AppCompatActivity {
     public static final String SONG_TRANSLATION = "com.example.musiclearning.SONG_TRANSLATION";
     public static final int ADD_SONG_LYRICS = 3;
 
+    ArtistViewModel artistViewModel;
+    ArtistAndSongs artist;
+
     EditText songNameET, artistNameET;
-    String songLyrics;
-    String songTranslation;
+    String artistName, songName, songLyrics, songTranslation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,50 +55,83 @@ public class UpdateSongActivity extends AppCompatActivity {
         artistNameET = findViewById(R.id.artistName);
 
         Intent intent = getIntent();
-        songNameET.setText(intent.getStringExtra(SONG_NAME));
-        artistNameET.setText(intent.getStringExtra(ARTIST_NAME));
+        artistName = intent.getStringExtra(ARTIST_NAME);
+        songName = intent.getStringExtra(SONG_NAME);
         songLyrics = intent.getStringExtra(SONG_LYRICS);
         songTranslation = intent.getStringExtra(SONG_TRANSLATION);
+
+        artistNameET.setText(artistName);
+        songNameET.setText(songName);
+
+        artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
+        artistViewModel.getArtistByName(artistName).observe(this, new Observer<ArtistAndSongs>() {
+            @Override
+            public void onChanged(ArtistAndSongs _artist) {
+                artist = _artist;
+            }
+        });
     }
 
     public void onClick(View v) throws ExecutionException, InterruptedException {
-        Intent intent = new Intent();
-
-        if (v.getId() == R.id.saveButton) {
-            intent.putExtra("button", "save");
-        }
-        else {
-            if (v.getId() == R.id.deleteButton){
-                intent.putExtra("button", "delete");
-            }
-            else {
-                setResult(RESULT_CANCELED, intent);
-                finish();
-            }
-        }
-
         String newName = songNameET.getText().toString();
         String newArtist = artistNameET.getText().toString();
         String newLyrics = songLyrics;
         String newTranslation = songTranslation;
 
-        Long artistId;
-        ArtistViewModel artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
-        artistId = artistViewModel.getArtistByName(newArtist);
-        if (artistId == null) {
-            // TODO: если у прошлого исполнителя больше нет произведений, то обновить его имя на новое введённое
-            Artist artist = new Artist(newArtist);
-            artistId = artistViewModel.insert(artist);
+        boolean isNameEmpty = false, isArtistEmpty = false;
+
+        String checkSongName = newName.replaceAll(" ", "");
+        String checkArtistName = newArtist.replaceAll(" ", "");
+
+        if (checkSongName.equals("")) {
+            isNameEmpty = true;
+            Toast.makeText(this, "Введите название песни", Toast.LENGTH_LONG).show();
+        }
+        if (checkArtistName.equals("")) {
+            isArtistEmpty = true;
+            Toast.makeText(this, "Введите имя автора", Toast.LENGTH_LONG).show();
         }
 
-        intent.putExtra(UpdateSongActivity.ARTIST_ID, artistId);
-        intent.putExtra(UpdateSongActivity.ARTIST_NAME, newArtist);
-        intent.putExtra(UpdateSongActivity.SONG_NAME, newName);
-        intent.putExtra(UpdateSongActivity.SONG_LYRICS, newLyrics);
-        intent.putExtra(UpdateSongActivity.SONG_TRANSLATION, newTranslation);
+        if (!(isNameEmpty || isArtistEmpty)) {
+            Intent intent = new Intent();
 
-        setResult(RESULT_OK, intent);
-        finish();
+            if (v.getId() == R.id.saveButton) {
+                intent.putExtra("button", "save");
+            }
+            else {
+                if (v.getId() == R.id.deleteButton){
+                    intent.putExtra("button", "delete");
+                }
+                else {
+                    setResult(RESULT_CANCELED, intent);
+                    finish();
+                }
+            }
+
+            Long artistId;
+
+            artistId = artistViewModel.getArtistIdByName(newArtist);
+            if (artistId == null) {  // Введёного исполнителя нет в бд
+                if (artist.songs.size() == 1) { // Если у прошлого исполнителя больше нет произведений, то обновить его имя на новое введённое
+                    artistId = artist.artist.getId();
+                    artist.artist.setName(newArtist);
+                    artistViewModel.update(artist.artist);
+                }
+                else {
+                    Artist artist = new Artist(newArtist);
+                    artistId = artistViewModel.insert(artist);
+                }
+            }
+
+            intent.putExtra(UpdateSongActivity.ARTIST_ID, artistId);
+            intent.putExtra(UpdateSongActivity.ARTIST_NAME, newArtist);
+            intent.putExtra(UpdateSongActivity.SONG_NAME, newName);
+            intent.putExtra(UpdateSongActivity.SONG_LYRICS, newLyrics);
+            intent.putExtra(UpdateSongActivity.SONG_TRANSLATION, newTranslation);
+
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
     public void addSongLyrics(View v) {
@@ -115,6 +153,7 @@ public class UpdateSongActivity extends AppCompatActivity {
             if(resultData != null) {
                 uri = resultData.getData();
                 File f = new File(uri.getPath());
+                String newLyrics = "";
                 try {
                     InputStream in = getContentResolver().openInputStream(uri);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -122,21 +161,26 @@ public class UpdateSongActivity extends AppCompatActivity {
                     for (String line; (line = reader.readLine()) != null; ) {
                         total.append(line).append('\n');
                     }
-                    songLyrics = total.toString();
+                    newLyrics = total.toString();
                 } catch (Exception e) {
                     Log.d("Error", "No file " + e.getLocalizedMessage());
                 }
 
-                if (!(songLyrics.equals(null) || songLyrics.equals("") || songLyrics.equals("\n"))) {
+                String checkLyrics = newLyrics.replaceAll(" ", "");
+                if (!checkLyrics.equals("")) {
+                    songLyrics = newLyrics;
                     TranslatorTask task = new TranslatorTask();
-                    task.execute("hello");
+//                    task.execute(songLyrics);
+                }
+                else {
+                    Toast.makeText(this, "В указанном файле нет текста", Toast.LENGTH_LONG).show();
                 }
             }
         }
     }
 
     class TranslatorTask extends AsyncTask<String, Void, String> {
-        String theKey = getString(R.string.theKey);
+        String theKey = getString(R.string.translatorKey);
         String folderId = getString(R.string.folderId);
         String targetLanguageCode = getString(R.string.targetLanguageCode);
         String set_server_url = getString(R.string.yandex_translator_server_url);

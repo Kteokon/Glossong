@@ -39,7 +39,7 @@ public class NoteRepository {
     }
 
     public LiveData<Note> getNoteBySongId(Long id) {
-        return this.noteDAO.findBySongId(id);
+        return this.noteDAO.findNoteBySongId(id);
     }
 
     public static class InsertNoteTask extends AsyncTask<Note, Void, Void> {

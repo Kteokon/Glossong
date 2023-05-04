@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 Long artistId = null;
                 ArtistViewModel artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
                 try {
-                    artistId = artistViewModel.getArtistByName(artistName);
+                    artistId = artistViewModel.getArtistIdByName(artistName);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {

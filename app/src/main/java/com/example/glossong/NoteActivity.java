@@ -39,7 +39,6 @@ public class NoteActivity extends AppCompatActivity {
         songId = intent.getLongExtra("songId", 0);
 
         noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
-
         noteViewModel.getNoteBySongId(songId).observe(this, new Observer<Note>() {
             @Override
             public void onChanged(Note _note) {

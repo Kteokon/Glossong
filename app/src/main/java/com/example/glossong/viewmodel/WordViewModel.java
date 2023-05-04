@@ -71,9 +71,9 @@ public class WordViewModel extends AndroidViewModel {
         return this.engWords;
     }
 
-//    public LiveData<List<SongDictionary>> getSongTranslations(Long songId) {
-//        return this.repository.getSongTranslations(songId);
-//    }
+    public LiveData<List<EngToRusWord>> getSongDictionary(Long songId) {
+        return this.repository.getSongDictionary(songId);
+    }
 
     public List<WordTuple> getWordBySpelling(String spelling) {
         return this.repository.getWordBySpelling(spelling);
@@ -81,10 +81,6 @@ public class WordViewModel extends AndroidViewModel {
 
     public List<Dictionary> getSongDictionaryByWordId(Long songId, Long engWordId) {
         return this.repository.getSongDictionaryByWordId(songId, engWordId);
-    }
-
-    public List<Dictionary> getSongDictionaries(Long songId) {
-        return this.repository.getSongDictionaries(songId);
     }
 
     public EngToRusWord getEngToRusWords(String spelling) {

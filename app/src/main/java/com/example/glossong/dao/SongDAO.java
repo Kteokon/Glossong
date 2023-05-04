@@ -17,7 +17,7 @@ import java.util.List;
 public interface SongDAO {
     @Transaction
     @Query("SELECT * FROM song")
-    public LiveData<List<SongAndArtist>> getSongsWithArtists();
+    LiveData<List<SongAndArtist>> getSongsWithArtists();
 
     @Insert
     void insert(Song... songs);

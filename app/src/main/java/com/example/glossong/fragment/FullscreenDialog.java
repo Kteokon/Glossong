@@ -109,10 +109,12 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
                             @Override
                             public void onClick(@NonNull View widget) {
                                 bottomMenu.setVisibility(View.VISIBLE);
-                                Log.d("mytag", "Click");
                                 DictionaryTask task = new DictionaryTask();
                                 clickedWord = word;
-                                String what = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dict.1.1.20230215T074722Z.df778d51e0ebdb09.260d7a33d7d4fa79d4df13fc548ce0817721cc4b&lang=en-ru&text=" + word;
+                                String set_server_url = getString(R.string.yandex_dictionary_server_url);
+                                String theKey = getString(R.string.dictionaryKey);
+                                String lang = getString(R.string.lang);
+                                String what = set_server_url + "?key=" + theKey + "&lang=" + lang + "&text=" + word;
                                 try {
                                     translations = task.execute(what).get();
                                 } catch (ExecutionException e) {

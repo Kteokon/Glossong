@@ -103,23 +103,6 @@ public class WordRepository {
     public LiveData<List<EngToRusWord>> getAllEngWords() {
         return this.engWords;
     }
-//
-//    public List<EngToRusWord> getAllEngWords() {
-//        return this.engWords;
-//    }
-
-//    public LiveData<List<SongDictionary>> getSongTranslations(Long songId) {
-//        FindTranslationsInSongTask task = new FindTranslationsInSongTask(wordDAO);
-//        LiveData<List<SongDictionary>> translations = null;
-//        try {
-//            translations = task.execute(songId).get();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        return translations;
-//    }
 
     public List<WordTuple> getWordBySpelling(String spelling) {
         FindWordBySpellingTask task = new FindWordBySpellingTask(wordDAO);
@@ -186,17 +169,17 @@ public class WordRepository {
         return dictionary;
     }
 
-    public List<Dictionary> getSongDictionaries(Long songId) {
-        FindSongDictionariesTask task = new FindSongDictionariesTask(wordDAO);
-        List<Dictionary> dictionaries = null;
+    public LiveData<List<EngToRusWord>> getSongDictionary(Long songId) {
+        FindSongDictionaryTask task = new FindSongDictionaryTask(wordDAO);
+        LiveData<List<EngToRusWord>> dictionary = null;
         try {
-            dictionaries = task.execute(songId).get();
+            dictionary = task.execute(songId).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return dictionaries;
+        return dictionary;
     }
 
     // region AsyncTasks
@@ -312,20 +295,6 @@ public class WordRepository {
         }
     }
 
-//    public static class FindTranslationsInSongTask extends AsyncTask<Long, Void, LiveData<List<SongDictionary>>> {
-//        WordDAO wordDAO;
-//
-//        public FindTranslationsInSongTask(WordDAO wordDAO) {
-//            this.wordDAO = wordDAO;
-//        }
-//
-//        @Override
-//        protected LiveData<List<SongDictionary>> doInBackground(Long... longs) {
-//            LiveData<List<SongDictionary>> translations = wordDAO.findTranslationsInSong(longs[0]);
-//            return translations;
-//        }
-//    }
-
     public static class FindWordBySpellingTask extends AsyncTask<String, Void, List<WordTuple>> {
         private WordDAO wordsDAO;
 
@@ -381,6 +350,21 @@ public class WordRepository {
         }
     }
 
+    public static class FindSongDictionaryTask extends AsyncTask<Long, Void, LiveData<List<EngToRusWord>>> {
+        private WordDAO wordsDAO;
+
+        private FindSongDictionaryTask(WordDAO wordsDAO) {
+            this.wordsDAO = wordsDAO;
+        }
+
+        @Override
+        protected LiveData<List<EngToRusWord>> doInBackground(Long... longs) {
+            Long songId = longs[0];
+            LiveData<List<EngToRusWord>> dictionary = wordsDAO.findSongDictionary(songId);
+            return dictionary;
+        }
+    }
+
     public static class FindSongDictionaryByWordIdTask extends AsyncTask<Long, Void, List<Dictionary>> {
         private WordDAO wordsDAO;
         private Long songId;
@@ -395,21 +379,6 @@ public class WordRepository {
             Long engWordId = longs[0];
             List<Dictionary> dictionary = wordsDAO.findSongDictionaryByWordId(songId, engWordId);
             return dictionary;
-        }
-    }
-
-    public static class FindSongDictionariesTask extends AsyncTask<Long, Void, List<Dictionary>> {
-        private WordDAO wordsDAO;
-
-        private FindSongDictionariesTask(WordDAO wordsDAO) {
-            this.wordsDAO = wordsDAO;
-        }
-
-        @Override
-        protected List<Dictionary> doInBackground(Long... longs) {
-            Long songId = longs[0];
-            List<Dictionary> dictionaries = wordsDAO.findSongDictionary(songId);
-            return dictionaries;
         }
     }
     //endregion

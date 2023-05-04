@@ -46,20 +46,16 @@ public interface WordDAO {
     @Delete
     int delete(Dictionary... dictionaries);
 
-//    @Query("SELECT * FROM eng_word")
-//    LiveData<List<EngWord>> findAllEngWords();
     @Query("SELECT * FROM dictionary where song_id LIKE :songId AND eng_word_id LIKE :engWordId")
     List<Dictionary> findSongDictionaryByWordId(Long songId, Long engWordId);
-    @Query("SELECT * FROM dictionary where song_id=:songId")
-    List<Dictionary> findSongDictionary(Long songId);
     @Query("SELECT spelling, id as wordId FROM eng_word where spelling=:spelling union SELECT spelling, id as wordId FROM rus_word where spelling=:spelling")
     List<WordTuple> findWordBySpelling(String spelling);
     @Transaction
     @Query("SELECT * FROM eng_word")
     LiveData<List<EngToRusWord>> findEngToRusWords();
-//    @Transaction
-//    @Query("SELECT * FROM dictionary WHERE song_id=:id")
-//    LiveData<List<SongDictionary>> findTranslationsInSong(Long id);
+    @Transaction
+    @Query("SELECT eng_word.* FROM eng_word INNER JOIN dictionary ON eng_word.id=dictionary.eng_word_id WHERE dictionary.song_id=:id ")
+    LiveData<List<EngToRusWord>> findSongDictionary(Long id);
 
     @Transaction
     @Query("SELECT * FROM eng_word where spelling=:spelling")
@@ -70,6 +66,4 @@ public interface WordDAO {
     @Transaction
     @Query("SELECT * FROM eng_word where id=:id")
     WordInSongs findWordInSongs(Long id);
-//    @Query("SELECT spelling, id as wordId FROM eng_word where spelling=:spelling union SELECT spelling, id as wordId FROM rus_word where spelling=:spelling")
-//    List<WordTuple> findWordWithTranslationsBySpelling(String spelling);
 }
