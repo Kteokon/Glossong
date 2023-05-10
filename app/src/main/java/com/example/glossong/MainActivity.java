@@ -18,7 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.glossong.fragment.ChooseTaskDialog;
 import com.example.glossong.model.Artist;
@@ -26,20 +26,22 @@ import com.example.glossong.model.SongAndArtist;
 import com.example.glossong.model.Song;
 import com.example.glossong.viewmodel.ArtistViewModel;
 import com.example.glossong.viewmodel.SongViewModel;
+import com.google.android.exoplayer2.ExoPlayer;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_STORAGE = 101;
-    public static final int ADD_SONG_REQUEST = 1;
+    private static final int ADD_SONG_REQUEST = 1;
 
     DBHelperWithLoader DBHelper;
     MyRoomDB myRoomDB;
+    ExoPlayer player;
 
     private SongViewModel songViewModel;
     private RecyclerView songList;
-    Button addSongButton, dictionaryButton, taskButton, allNotesButton;
+    ImageButton addSongButton, dictionaryButton, taskButton, allNotesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,25 +140,33 @@ public class MainActivity extends AppCompatActivity {
                 String artistName = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
 
                 Long artistId = null;
-                ArtistViewModel artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
-                try {
-                    artistId = artistViewModel.getArtistIdByName(artistName);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                Log.d("mytag", "" + "a");
+                if (artistName == null) {
+                    artistId = 1L;
                 }
-                if (artistId == null) {
-                    Artist newArtist = new Artist(artistName);
-                    artistId = artistViewModel.insert(newArtist);
+                else {
+                    ArtistViewModel artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
+                    try {
+                        artistId = artistViewModel.getArtistIdByName(artistName);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (artistId == null) {
+                        Artist newArtist = new Artist(artistName);
+                        artistId = artistViewModel.insert(newArtist);
+                    }
                 }
-
-                Log.d("mytag", "song title: " + songName);
-                Log.d("mytag", "song artist: " + artistName);
 
                 Song song = new Song(properPath, "", "");
                 song.setArtistId(artistId);
-                song.setName(songName);
+                if (!(songName == null)) {
+                    song.setName(songName);
+                }
+                else {
+                    song.setName("Без названия");
+                }
                 songViewModel.insert(song);
             }
         }

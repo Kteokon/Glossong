@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#BA96F8"
+    android:background="#F2EBFF"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -12,7 +12,9 @@
         android:id="@+id/menuButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2sp"
+        android:layout_marginTop="10sp"
+        android:layout_marginStart="10sp"
+        android:layout_marginEnd="10sp"
         android:layout_marginBottom="5sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,60 +23,60 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <Button
-            android:id="@+id/dictionaryButton"
-            android:layout_width="50sp"
-            android:layout_height="50sp"
-            android:layout_marginStart="25dp"
-            android:background="#00FFFFFF"
-            app:icon="@drawable/dictionary_button"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:iconSize="50sp"
-            app:iconTint="#200343" />
-
-        <Button
+        <ImageButton
             android:id="@+id/taskButton"
             android:layout_width="50sp"
             android:layout_height="50sp"
             android:layout_centerVertical="true"
-            android:layout_marginStart="25dp"
-            android:layout_toEndOf="@+id/dictionaryButton"
+            android:layout_alignParentStart="true"
             android:background="#00FFFFFF"
-            app:icon="@drawable/task_button"
-            app:iconGravity="textStart"
-            app:iconPadding="0sp"
-            app:iconSize="50sp"
-            app:iconTint="#200343" />
+            android:cropToPadding="false"
+            android:padding="4sp"
+            android:scaleType="centerInside"
+            android:src="@drawable/task_button"
+            app:tint="#8F94F8" />
 
-        <Button
+        <ImageButton
+            android:id="@+id/dictionaryButton"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/taskButton"
+            android:layout_marginStart="10sp"
+            android:background="#00FFFFFF"
+            android:cropToPadding="false"
+            android:padding="4sp"
+            android:scaleType="centerInside"
+            android:src="@drawable/dictionary_icon"
+            app:tint="#8F94F8" />
+
+        <ImageButton
             android:id="@+id/notesButton"
             android:layout_width="50sp"
             android:layout_height="50sp"
             android:layout_centerVertical="true"
-            android:layout_marginStart="25dp"
-            android:layout_toEndOf="@+id/taskButton"
+            android:layout_marginStart="10sp"
+            android:layout_toEndOf="@+id/dictionaryButton"
             android:background="#00FFFFFF"
-            android:gravity="center_horizontal"
-            app:icon="@drawable/notes_button"
-            app:iconGravity="textStart"
-            app:iconPadding="0sp"
-            app:iconSize="50sp"
-            app:iconTint="#200343" />
+            android:cropToPadding="false"
+            android:padding="4sp"
+            android:scaleType="centerInside"
+            android:src="@drawable/note_icon"
+            app:tint="#8F94F8" />
 
-        <Button
+        <ImageButton
             android:id="@+id/addSongButton"
             android:layout_width="50sp"
             android:layout_height="50sp"
             android:layout_centerVertical="true"
-            android:layout_marginStart="25dp"
-            android:layout_toEndOf="@+id/notesButton"
-            android:background="#00AED189"
-            app:icon="@drawable/add_song"
-            app:iconGravity="textStart"
-            app:iconPadding="0sp"
-            app:iconSize="50sp"
-            app:iconTint="#200343" />
+            android:layout_marginStart="10sp"
+            android:layout_alignParentEnd="true"
+            android:background="#00FFFFFF"
+            android:cropToPadding="false"
+            android:padding="5sp"
+            android:scaleType="centerInside"
+            android:src="@drawable/add_song"
+            app:tint="#8F94F8" />
 
     </RelativeLayout>
 
@@ -96,6 +98,8 @@
         android:id="@+id/nowPlaying"
         android:layout_width="match_parent"
         android:layout_height="50sp"
+        android:background="@color/red"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

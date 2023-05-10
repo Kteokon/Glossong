@@ -20,11 +20,15 @@ import com.example.glossong.ClickWordsActivity;
 import com.example.glossong.MatchWordsActivity;
 import com.example.glossong.R;
 import com.example.glossong.model.EngToRusWord;
+import com.example.glossong.model.TaskSettings;
 import com.example.glossong.viewmodel.WordViewModel;
 
 import java.util.List;
 
 public class ChooseTaskDialog extends DialogFragment implements View.OnClickListener {
+    private static final int MATCH_WORDS = 1;
+    private static final int CLICK_WORDS = 2;
+
     Long dictionarySize;
     public static ChooseTaskDialog newInstance() {
         return new ChooseTaskDialog();
@@ -50,33 +54,61 @@ public class ChooseTaskDialog extends DialogFragment implements View.OnClickList
 
         Button matchWordsButton = view.findViewById(R.id.matchWordsButton);
         Button clickWordsButton = view.findViewById(R.id.clickWordsButton);
+        Button settingsButton = view.findViewById(R.id.settingsButton);
 
         matchWordsButton.setOnClickListener(this);
         clickWordsButton.setOnClickListener(this);
+        settingsButton.setOnClickListener(this);
+
         return view;
     }
 
     @Override
     public void onClick(View v) {
-        if (this.dictionarySize < 2) {
+        if (this.dictionarySize < 2) { // Если в словаре всего два слова, то выводим предупреждение
             FragmentManager manager = getActivity().getSupportFragmentManager();
             MyHintDialog dialog = new MyHintDialog();
             dialog.show(manager, "toTaskHint");
         }
         else {
             int id = v.getId();
+            Long amountOfWords = TaskSettings.amountOfWords;
+            if (amountOfWords == 0) { // Если ещё не назначили количество слов
+                if (dictionarySize < 6) {
+                    amountOfWords = 2L;
+                }
+                else {
+                    amountOfWords = dictionarySize / 2;
+                }
+            }
+            else {
+                if (dictionarySize < amountOfWords) { // Если размер словаря стал меньше установленного количества
+                    amountOfWords = dictionarySize;
+                }
+            }
+            TaskSettings.amountOfWords = amountOfWords;
             switch (id) {
                 case R.id.matchWordsButton: {
                     Intent intent = new Intent(getContext(), MatchWordsActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, MATCH_WORDS);
                     break;
                 }
                 case R.id.clickWordsButton: {
                     Intent intent = new Intent(getContext(), ClickWordsActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, CLICK_WORDS);
+                    break;
+                }
+                case R.id.settingsButton: {
+                    DialogFragment dialog = TaskSettingsDialog.newInstance(dictionarySize);
+                    dialog.show(getActivity().getSupportFragmentManager(), "tag");
                     break;
                 }
             }
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
+        this.dismiss();
     }
 }

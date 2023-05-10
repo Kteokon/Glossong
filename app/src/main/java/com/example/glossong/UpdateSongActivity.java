@@ -112,7 +112,7 @@ public class UpdateSongActivity extends AppCompatActivity {
 
             artistId = artistViewModel.getArtistIdByName(newArtist);
             if (artistId == null) {  // Введёного исполнителя нет в бд
-                if (artist.songs.size() == 1) { // Если у прошлого исполнителя больше нет произведений, то обновить его имя на новое введённое
+                if (artist.songs.size() == 1 && artist.artist.getId() != 1) { // Если у прошлого исполнителя больше нет произведений и он не неизвестен, то обновить его имя на новое введённое
                     artistId = artist.artist.getId();
                     artist.artist.setName(newArtist);
                     artistViewModel.update(artist.artist);
@@ -170,7 +170,7 @@ public class UpdateSongActivity extends AppCompatActivity {
                 if (!checkLyrics.equals("")) {
                     songLyrics = newLyrics;
                     TranslatorTask task = new TranslatorTask();
-//                    task.execute(songLyrics);
+                    task.execute(songLyrics);
                 }
                 else {
                     Toast.makeText(this, "В указанном файле нет текста", Toast.LENGTH_LONG).show();

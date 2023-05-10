@@ -24,13 +24,11 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.Custom
     private List<NoteWithSongAndArtist> notes = new ArrayList<>();
     Context context;
     LayoutInflater inflater;
-//    ItemClickListener listener;
 
     public NoteListAdapter(Context context, List<NoteWithSongAndArtist> notes) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.notes = notes;
-//        this.listener = listener;
     }
 
     @NonNull

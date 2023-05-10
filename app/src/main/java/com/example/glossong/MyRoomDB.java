@@ -31,7 +31,7 @@ public abstract class MyRoomDB extends RoomDatabase {
     abstract NoteDAO noteDAO();
     abstract WordDAO wordDAO();
 
-    private static final String DB_NAME = "glossong2.db";
+    private static final String DB_NAME = "glossong.db";
     private static volatile MyRoomDB INSTANCE = null;
 
     static MyRoomDB create(Context ctxt, boolean memoryOnly) {

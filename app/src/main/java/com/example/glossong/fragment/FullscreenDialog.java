@@ -1,6 +1,7 @@
 package com.example.glossong.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ import com.example.glossong.model.Translation;
 import com.example.glossong.model.YandexDictionary;
 import com.example.glossong.tuple.WordTuple;
 import com.example.glossong.viewmodel.WordViewModel;
+import com.google.android.material.color.MaterialColors;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -46,6 +49,7 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
     ScrollView lyricsSV, translationSV;
     TextView lyricsTV, translationTV, wordsTV;
     RelativeLayout bottomMenu;
+    View separateLine;
 
     Long songId;
     String clickedWord = "";
@@ -76,11 +80,12 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
         lyricsTV = view.findViewById(R.id.lyrics);
         translationTV = view.findViewById(R.id.translation);
         wordsTV = view.findViewById(R.id.words);
-        Button closeButton = view.findViewById(R.id.closeButton);
+        separateLine = view.findViewById(R.id.separateLine);
         Button lyricsButton = view.findViewById(R.id.lyricsButton);
         Button translationButton = view.findViewById(R.id.translationButton);
+        ImageButton closeButton = view.findViewById(R.id.closeButton);
         bottomMenu = view.findViewById(R.id.bottomMenu);
-        Button addButton = view.findViewById(R.id.addToDictionaryButton);
+        ImageButton addButton = view.findViewById(R.id.addToDictionaryButton);
 
         this.songId = getArguments().getLong("songId");
         String lyrics = getArguments().getString("lyrics");
@@ -127,7 +132,8 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
                             @Override
                             public void updateDrawState(@NonNull TextPaint ds) {
                                 super.updateDrawState(ds);
-                                ds.setColor(Color.YELLOW);
+                                int color = MaterialColors.getColor(getContext(), androidx.appcompat.R.attr.theme, Color.BLACK);
+                                ds.setColor(color);
                                 ds.setUnderlineText(false);
                             }
                         };
@@ -146,6 +152,11 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
         lyricsSV.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+//                double scrollViewHeight = lyricsSV.getChildAt(0).getBottom() - lyricsSV.getHeight();
+//                double getScrollY = lyricsSV.getScrollY();
+//                double scrollPosition = (getScrollY / scrollViewHeight) * 100d;
+//                Log.d("mytag", "" + (int) scrollPosition);
+//                translationSV.scrollTo(0, (int) scrollPosition);
                 translationSV.scrollTo(0, lyricsSV.getScrollY());
             }
         });
@@ -153,6 +164,10 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
         translationSV.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+//                double scrollViewHeight = translationSV.getChildAt(0).getBottom() - translationSV.getHeight();
+//                double getScrollY = translationSV.getScrollY();
+//                double scrollPosition = (getScrollY / scrollViewHeight) * 100d;
+//                lyricsSV.scrollTo(0, (int) scrollPosition);
                 lyricsSV.scrollTo(0, translationSV.getScrollY());
             }
         });
@@ -172,13 +187,15 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
                 dismiss();
                 break;
             }
-            case R.id.lyricsButton: {
-                if (lyricsSV.getVisibility() == View.GONE) {
+            case R.id.lyricsButton: { // Нажали на ru
+                if (lyricsSV.getVisibility() == View.GONE) { // Текст не виден
                     lyricsSV.setVisibility(View.VISIBLE);
+                    separateLine.setVisibility(View.VISIBLE);
                 }
                 else {
-                    if (translationSV.getVisibility() == View.VISIBLE) {
+                    if (translationSV.getVisibility() == View.VISIBLE) { // Текст виден, перевод виден
                         translationSV.setVisibility(View.GONE);
+                        separateLine.setVisibility(View.GONE);
                     }
                 }
                 break;
@@ -186,11 +203,13 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
             case R.id.translationButton: {
                 if (translationSV.getVisibility() == View.GONE) {
                     translationSV.setVisibility(View.VISIBLE);
+                    separateLine.setVisibility(View.VISIBLE);
                 }
                 else {
                     if (lyricsSV.getVisibility() == View.VISIBLE) {
                         lyricsSV.setVisibility(View.GONE);
                         bottomMenu.setVisibility(View.GONE);
+                        separateLine.setVisibility(View.GONE);
                     }
                 }
                 break;

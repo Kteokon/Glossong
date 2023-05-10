@@ -1,9 +1,11 @@
 package com.example.glossong;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,6 +14,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.glossong.model.EngToRusWord;
+import com.example.glossong.model.TaskSettings;
 import com.example.glossong.viewmodel.WordViewModel;
 
 import java.util.ArrayList;
@@ -24,12 +27,15 @@ import java.util.Set;
 public class ClickWordsActivity extends AppCompatActivity {
     LinearLayout llEngWords, llRusWords;
     TextView first, second;
+    Button exitButton, restartButton;
 
     WordViewModel wordViewModel;
 
     int emptyColor;
 
+    List<EngToRusWord> words;
     int wordsClicked = 0;
+    Long amountOfWords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +44,39 @@ public class ClickWordsActivity extends AppCompatActivity {
 
         llEngWords = findViewById(R.id.engWords);
         llRusWords = findViewById(R.id.rusWords);
+        Button exitButton = findViewById(R.id.exitButton);
+        Button restartButton = findViewById(R.id.restartButton);
         emptyColor = getResources().getColor(R.color.nothing);
+
+        amountOfWords = TaskSettings.amountOfWords;
 
         wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
         wordViewModel.getEngWords().observe(this, new Observer<List<EngToRusWord>>() {
             @Override
-            public void onChanged(List<EngToRusWord> words) {
+            public void onChanged(List<EngToRusWord> _words) {
+                words = _words;
                 new SetWordsTask(getApplicationContext(), words).execute();
+            }
+        });
+
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restartButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        llEngWords.removeAllViews();
+                        llRusWords.removeAllViews();
+                        new ClickWordsActivity.SetWordsTask(getApplicationContext(), words).execute();
+                    }
+                });
             }
         });
     }
@@ -60,7 +92,7 @@ public class ClickWordsActivity extends AppCompatActivity {
         @Override
         protected Map<String, String> doInBackground(Void... voids) {
             Map<String, String> wordsAndTranslation = new HashMap<>();
-            while (wordsAndTranslation.size() < words.size()) {
+            while (wordsAndTranslation.size() < amountOfWords) {
                 int randomWord = (int) (Math.random() * words.size());
                 int randomTranslation = (int) (Math.random() * words.get(randomWord).translations.size());
                 String word = words.get(randomWord).word.getSpelling();

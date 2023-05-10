@@ -69,20 +69,25 @@ public class NoteActivity extends AppCompatActivity {
                 note.setNoteText(text);
                 noteViewModel.update(note);
             }
+
+            setResult(RESULT_OK, intent);
+            finish();
         }
         else {
-            if (!isNew) {
-                noteViewModel.delete(note);
-            }
+            deleteNote(v);
         }
-
-        setResult(RESULT_OK, intent);
-        finish();
     }
 
     public void cancelChanges(View v) {
         Intent intent = new Intent();
         setResult(RESULT_CANCELED, intent);
+        finish();
+    }
+
+    public void deleteNote(View v) {
+        if (!isNew) {
+            noteViewModel.delete(note);
+        }
         finish();
     }
 }

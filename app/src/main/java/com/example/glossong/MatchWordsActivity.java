@@ -3,12 +3,14 @@ package com.example.glossong;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.glossong.listener.MyDragListener;
 import com.example.glossong.model.EngToRusWord;
+import com.example.glossong.model.TaskSettings;
 import com.example.glossong.viewmodel.WordViewModel;
 
 import java.util.ArrayList;
@@ -29,8 +32,12 @@ import java.util.Set;
 public class MatchWordsActivity extends AppCompatActivity {
     LinearLayout llMain;
     Button checkButton;
+    ScrollView scrollView;
 
     WordViewModel wordViewModel;
+
+    List<EngToRusWord> words;
+    Long amountOfWords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +46,15 @@ public class MatchWordsActivity extends AppCompatActivity {
 
         llMain = findViewById(R.id.linearLayoutMain);
         checkButton = findViewById(R.id.checkButton);
+        scrollView = findViewById(R.id.scrollView);
+
+        amountOfWords = TaskSettings.amountOfWords;
 
         wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
         wordViewModel.getEngWords().observe(this, new Observer<List<EngToRusWord>>() {
             @Override
-            public void onChanged(List<EngToRusWord> words) {
+            public void onChanged(List<EngToRusWord> _words) {
+                words = _words;
                 new SetWordsTask(getApplicationContext(), words).execute();
             }
         });
@@ -56,19 +67,40 @@ public class MatchWordsActivity extends AppCompatActivity {
                     String rightAnswer = (String) line.getTag();
                     LinearLayout rightPart = (LinearLayout) line.getChildAt(1);
                     TextView textView = (TextView) rightPart.getChildAt(0);
+                    textView.setOnLongClickListener(null);
                     String userAnswer = (String) textView.getTag();
                     int rightColor = getResources().getColor(R.color.green), wrongColor = getResources().getColor(R.color.red);
 
-                    Log.d("mytag", "right answer:" + rightAnswer + "\nuser answer: " + userAnswer);
                     if (rightAnswer.equals(userAnswer)) {
-                        line.setBackgroundColor(rightColor);
+//                        line.setBackgroundColor(rightColor);
                         textView.setBackgroundColor(rightColor);
                     }
                     else {
-                        line.setBackgroundColor(wrongColor);
+//                        line.setBackgroundColor(wrongColor);
                         textView.setBackgroundColor(wrongColor);
                     }
                 }
+                checkButton.setVisibility(View.GONE);
+                Button exitButton = findViewById(R.id.exitButton);
+                Button restartButton = findViewById(R.id.restartButton);
+                exitButton.setVisibility(View.VISIBLE);
+                restartButton.setVisibility(View.VISIBLE);
+                exitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
+                restartButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        checkButton.setVisibility(View.VISIBLE);
+                        exitButton.setVisibility(View.GONE);
+                        restartButton.setVisibility(View.GONE);
+                        llMain.removeAllViews();
+                        new SetWordsTask(getApplicationContext(), words).execute();
+                    }
+                });
             }
         });
     }
@@ -85,7 +117,7 @@ public class MatchWordsActivity extends AppCompatActivity {
         @Override
         protected Map<String, String> doInBackground(Void... voids) {
             Map<String, String> wordsAndTranslation = new HashMap<>();
-            while (wordsAndTranslation.size() < words.size()) {
+            while (wordsAndTranslation.size() < amountOfWords) {
                 int randomWord = (int) (Math.random() * words.size());
                 int randomTranslation = (int) (Math.random() * words.get(randomWord).translations.size());
                 String word = words.get(randomWord).word.getSpelling();
@@ -130,10 +162,9 @@ public class MatchWordsActivity extends AppCompatActivity {
                 line.setOrientation(LinearLayout.HORIZONTAL);
                 textView.setLayoutParams(params);
 
-//                int color = getResources().getColor(R.color.purple_200);
-//                leftPart.setBackgroundColor(color);
-//                color = getResources().getColor(R.color.teal_200);
-//                rightPart.setBackgroundColor(color);
+                int color = getResources().getColor(R.color.white, Resources.getSystem().newTheme());
+                leftPart.setBackgroundColor(color);
+                rightPart.setBackgroundColor(color);
 
                 leftPart.setText(word);
                 line.setTag(word);

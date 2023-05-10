@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.glossong.model.NoteAndSong;
 import com.example.glossong.model.NoteWithSongAndArtist;
@@ -20,7 +21,7 @@ import java.util.List;
 public class NotesActivity extends AppCompatActivity {
     private NoteViewModel noteViewModel;
     private RecyclerView noteList;
-    Button songsButton;
+    ImageButton backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ public class NotesActivity extends AppCompatActivity {
 
         noteList = findViewById(R.id.notesList);
         noteList.setLayoutManager(new LinearLayoutManager(this));
-        songsButton = findViewById(R.id.songsButton);
+        backButton = findViewById(R.id.backButton);
 
         noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
         noteViewModel.getNotes().observe(this, new Observer<List<NoteWithSongAndArtist>>() {
@@ -40,7 +41,7 @@ public class NotesActivity extends AppCompatActivity {
             }
         });
 
-        songsButton.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();

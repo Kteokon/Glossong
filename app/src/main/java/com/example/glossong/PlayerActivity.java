@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -39,6 +40,8 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class PlayerActivity extends AppCompatActivity {
@@ -46,281 +49,48 @@ public class PlayerActivity extends AppCompatActivity {
 
     SeekBar seekBar;
     TextView timePassedTV, timeOverTV, songTV, artistTV;
-    Button playButton, shuffleButton, loopButton,
-            homeButton, updateButton, dictionaryButton,
-            notesButton, lyricsButton;
+    ImageButton homeButton, updateButton, dictionaryButton,
+            noteButton, playButton, shuffleButton, loopButton;
+    Button lyricsButton;
+
+    SongViewModel songViewModel;
 
     ExoPlayer player;
-    List<SongAndArtist> songs;
-    int nowPlaying;
-    NoteViewModel noteViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        Intent intent = getIntent();
-
-        SongViewModel songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
+        songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
         songViewModel.getSongs().observe(this, new Observer<List<SongAndArtist>>() {
             @Override
             public void onChanged(List<SongAndArtist> _songs) {
-                songs = _songs;
                 List<MediaItem> playlist = new ArrayList<>();
+
+                MyMediaPlayer.songs = _songs;
+                MyMediaPlayer.seekBar = seekBar;
+                MyMediaPlayer.timeOverTV = timeOverTV;
+                MyMediaPlayer.songTV = songTV;
+                MyMediaPlayer.artistTV = artistTV;
+                MyMediaPlayer.updateButton = updateButton;
+                MyMediaPlayer.playButton = playButton;
+
+                player = MyMediaPlayer.getInstance(getApplicationContext());
+
+                Log.d("PlayerListener", "setting songs");
 
                 for (SongAndArtist i: _songs) {
                     MediaItem item = new MediaItem.Builder()
-                            .setUri(i.song.getSource())
+                            .setUri(i.song.getSource()) // TODO: делать проверку на интернет. Если нет, то проверяем местонахождение на устройстве
                             .setMimeType(MimeTypes.BASE_TYPE_AUDIO)
                             .build();
                     playlist.add(item);
                 }
 
-                player.setMediaItems(playlist, nowPlaying, 0);
+                player.setMediaItems(playlist, MyMediaPlayer.nowPlaying, 0);
                 player.prepare();
-
-                Log.d("mytag", "prepared " + MyMediaPlayer.nowPlaying);
-            }
-        });
-
-        player = MyMediaPlayer.getInstance(this);
-        nowPlaying = MyMediaPlayer.nowPlaying;
-
-        noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
-
-        player.addListener(new ExoPlayer.Listener() {
-            @Override
-            public void onTracksChanged(Tracks tracks) {
-                Player.Listener.super.onTracksChanged(tracks);
-
-                Log.d("Player listener", "On track changed");
-            }
-
-            @Override
-            public void onEvents(Player player, Player.Events events) {
-                Player.Listener.super.onEvents(player, events);
-                Log.d("Player listener", "On events");
-            }
-
-            @Override
-            public void onTimelineChanged(Timeline timeline, int reason) {
-                Player.Listener.super.onTimelineChanged(timeline, reason);
-
-                Log.d("Player listener", "On timeline changed");
-            }
-
-            @Override
-            public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
-                Player.Listener.super.onMediaItemTransition(mediaItem, reason);
-
-                Log.d("Player listener", "On media item transition");
-                Song song = songs.get(nowPlaying).song;
-                Artist artist = songs.get(nowPlaying).artist;
-
-                songTV.setText(song.getName());
-                artistTV.setText(artist.getName());
-                if (song.getSource().substring(0, 5).equals("https")) {
-                    updateButton.setVisibility(View.GONE);
-                }
-                else {
-                    updateButton.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
-                Player.Listener.super.onMediaMetadataChanged(mediaMetadata);
-
-                Log.d("Player listener", "On media metadata changed");
-            }
-
-            @Override
-            public void onPlaylistMetadataChanged(MediaMetadata mediaMetadata) {
-                Player.Listener.super.onPlaylistMetadataChanged(mediaMetadata);
-
-                Log.d("Player listener", "On playlist metadata changed");
-            }
-
-            @Override
-            public void onIsLoadingChanged(boolean isLoading) {
-                Player.Listener.super.onIsLoadingChanged(isLoading);
-
-                Log.d("Player listener", "On is loading changed");
-            }
-
-            @Override
-            public void onAvailableCommandsChanged(Player.Commands availableCommands) {
-                Player.Listener.super.onAvailableCommandsChanged(availableCommands);
-
-                Log.d("Player listener", "On available commands changed");
-            }
-
-            @Override
-            public void onTrackSelectionParametersChanged(TrackSelectionParameters parameters) {
-                Player.Listener.super.onTrackSelectionParametersChanged(parameters);
-
-                Log.d("Player listener", "On track selection parameters changed");
-            }
-
-            @Override
-            public void onPlaybackStateChanged(int playbackState) {
-                Player.Listener.super.onPlaybackStateChanged(playbackState);
-
-                if (playbackState == ExoPlayer.STATE_READY) {
-                    Log.d("Player listener", "State ready");
-                    timeOverTV.setText(getSongDuration((int) player.getDuration()));
-                    seekBar.setMax((int) (player.getDuration() / 1000));
-                }
-                if (playbackState == ExoPlayer.STATE_IDLE) {
-                    Log.d("Player listener", "State idle");
-                }
-                if (playbackState == ExoPlayer.STATE_BUFFERING) {
-                    Log.d("Player listener", "State buffering");
-                }
-                if (playbackState == ExoPlayer.STATE_ENDED) {
-                    Log.d("Player listener", "State ended");
-                }
-            }
-
-            @Override
-            public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
-                Player.Listener.super.onPlayWhenReadyChanged(playWhenReady, reason);
-
-                Log.d("Player listener", "On play when ready changed");
-            }
-
-            @Override
-            public void onPlaybackSuppressionReasonChanged(int playbackSuppressionReason) {
-                Player.Listener.super.onPlaybackSuppressionReasonChanged(playbackSuppressionReason);
-
-                Log.d("Player listener", "On playback suppression reason changed");
-            }
-
-            @Override
-            public void onIsPlayingChanged(boolean isPlaying) {
-                Player.Listener.super.onIsPlayingChanged(isPlaying);
-
-                Log.d("Player listener", "On is playing changed");
-            }
-
-            @Override
-            public void onRepeatModeChanged(int repeatMode) {
-                Player.Listener.super.onRepeatModeChanged(repeatMode);
-
-                Log.d("Player listener", "On repeat mode changed");
-            }
-
-            @Override
-            public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
-                Player.Listener.super.onShuffleModeEnabledChanged(shuffleModeEnabled);
-
-                Log.d("Player listener", "On shuffle mode enabled changed");
-            }
-
-            @Override
-            public void onPlayerError(PlaybackException error) {
-                Player.Listener.super.onPlayerError(error);
-
-                Log.d("Player error", "On player error " + error.toString());
-            }
-
-            @Override
-            public void onPlayerErrorChanged(@Nullable PlaybackException error) {
-                Player.Listener.super.onPlayerErrorChanged(error);
-
-                Log.d("Player error", "On player error changed " + error.toString());
-            }
-
-            @Override
-            public void onPositionDiscontinuity(Player.PositionInfo oldPosition, Player.PositionInfo newPosition, int reason) {
-                Player.Listener.super.onPositionDiscontinuity(oldPosition, newPosition, reason);
-
-                Log.d("Player listener", "On position discontinuity old position new position");
-            }
-
-            @Override
-            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-                Player.Listener.super.onPlaybackParametersChanged(playbackParameters);
-
-                Log.d("Player listener", "On playback parameters changed");
-            }
-
-            @Override
-            public void onSeekBackIncrementChanged(long seekBackIncrementMs) {
-                Player.Listener.super.onSeekBackIncrementChanged(seekBackIncrementMs);
-
-                Log.d("Player listener", "On seek back increment changed");
-            }
-
-            @Override
-            public void onSeekForwardIncrementChanged(long seekForwardIncrementMs) {
-                Player.Listener.super.onSeekForwardIncrementChanged(seekForwardIncrementMs);
-
-                Log.d("Player listener", "On seek forward increment changed");
-            }
-
-            @Override
-            public void onMaxSeekToPreviousPositionChanged(long maxSeekToPreviousPositionMs) {
-                Player.Listener.super.onMaxSeekToPreviousPositionChanged(maxSeekToPreviousPositionMs);
-
-                Log.d("Player listener", "On max seek to previous position changed");
-            }
-
-            @Override
-            public void onAudioSessionIdChanged(int audioSessionId) {
-                Player.Listener.super.onAudioSessionIdChanged(audioSessionId);
-
-                Log.d("Player listener", "On audio session id changed");
-            }
-
-            @Override
-            public void onAudioAttributesChanged(AudioAttributes audioAttributes) {
-                Player.Listener.super.onAudioAttributesChanged(audioAttributes);
-
-                Log.d("Player listener", "On audio attributes changed");
-            }
-
-            @Override
-            public void onVolumeChanged(float volume) {
-                Player.Listener.super.onVolumeChanged(volume);
-
-                Log.d("Player listener", "On volume changed");
-            }
-
-            @Override
-            public void onSkipSilenceEnabledChanged(boolean skipSilenceEnabled) {
-                Player.Listener.super.onSkipSilenceEnabledChanged(skipSilenceEnabled);
-
-                Log.d("Player listener", "On skip silence enabled changed");
-            }
-
-            @Override
-            public void onDeviceInfoChanged(DeviceInfo deviceInfo) {
-                Player.Listener.super.onDeviceInfoChanged(deviceInfo);
-
-                Log.d("Player listener", "On device info changed");
-            }
-
-            @Override
-            public void onDeviceVolumeChanged(int volume, boolean muted) {
-                Player.Listener.super.onDeviceVolumeChanged(volume, muted);
-
-                Log.d("Player listener", "On device volume changed");
-            }
-
-            @Override
-            public void onCues(CueGroup cueGroup) {
-                Player.Listener.super.onCues(cueGroup);
-
-                Log.d("Player listener", "On cues cue group");
-            }
-
-            @Override
-            public void onMetadata(Metadata metadata) {
-                Player.Listener.super.onMetadata(metadata);
-
-                Log.d("Player listener", "On metadata");
+                player.play();
             }
         });
 
@@ -335,7 +105,7 @@ public class PlayerActivity extends AppCompatActivity {
         homeButton = findViewById(R.id.homeButton);
         updateButton = findViewById(R.id.updateButton);
         dictionaryButton = findViewById(R.id.dictionaryButton);
-        notesButton = findViewById(R.id.notesButton);
+        noteButton = findViewById(R.id.noteButton);
         lyricsButton = findViewById(R.id.lyricsButton);
 
         Handler handler = new Handler();
@@ -372,16 +142,11 @@ public class PlayerActivity extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                player.prepare();
                 if (player.isPlaying()) {
                     player.pause();
-                    Drawable img = getResources().getDrawable(R.drawable.play_button, null);
-                    playButton.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
                 }
                 else {
-                    player.play();
-                    Drawable img = getResources().getDrawable(R.drawable.pause_button, null);
-                    playButton.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+                    player.play(); // TODO: если объект null, то выводить сообщение
                 }
             }
         });
@@ -391,17 +156,16 @@ public class PlayerActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (player.getRepeatMode() == Player.REPEAT_MODE_OFF) {
                     player.setRepeatMode(Player.REPEAT_MODE_ONE);
-                    loopButton.setBackgroundResource(R.drawable.repeat_one_button);
-                    //loopButton.setBackgroundColor("#BAA4FE");
+                    loopButton.setImageResource(R.drawable.repeat_one_icon);
                 }
                 else {
                     if (player.getRepeatMode() == Player.REPEAT_MODE_ONE) {
                         player.setRepeatMode(Player.REPEAT_MODE_ALL);
-                        loopButton.setBackgroundResource(R.drawable.repeat_on_button);
+                        loopButton.setImageResource(R.drawable.repeat_on_icon);
                     }
                     else {
                         player.setRepeatMode(Player.REPEAT_MODE_OFF);
-                        loopButton.setBackgroundResource(R.drawable.repeat_off_button);
+                        loopButton.setImageResource(R.drawable.repeat_off_icon);
                     }
                 }
             }
@@ -410,18 +174,30 @@ public class PlayerActivity extends AppCompatActivity {
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                List<SongAndArtist> songs = MyMediaPlayer.songs;
                 int r = (int)(Math.random() * songs.size());
-                nowPlaying = r;
+                MyMediaPlayer.nowPlaying = r;
 
                 player.seekTo(r, 0);
                 player.prepare();
                 player.play();
+                playButton.setImageResource(R.drawable.pause_icon);
+            }
+        });
+
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
         lyricsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                List<SongAndArtist> songs = MyMediaPlayer.songs;
+                int nowPlaying = MyMediaPlayer.nowPlaying;
+
                 DialogFragment dialog = FullscreenDialog.newInstance(songs.get(nowPlaying).song.getId(), songs.get(nowPlaying).song.getLyrics(), songs.get(nowPlaying).song.getTranslation());
                 dialog.show(getSupportFragmentManager(), "tag");
             }
@@ -430,6 +206,8 @@ public class PlayerActivity extends AppCompatActivity {
         dictionaryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                List<SongAndArtist> songs = MyMediaPlayer.songs;
+                int nowPlaying = MyMediaPlayer.nowPlaying;
                 Intent intent = new Intent(getApplicationContext(), DictionaryActivity.class);
                 intent.putExtra("words", "song");
                 intent.putExtra("songId", songs.get(nowPlaying).song.getId());
@@ -439,6 +217,8 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     public void skipSong(View v){
+        List<SongAndArtist> songs = MyMediaPlayer.songs;
+        int nowPlaying = MyMediaPlayer.nowPlaying;
         switch (v.getId()) {
             case R.id.skipLeftButton: {
                 if (nowPlaying > 0) {
@@ -455,9 +235,13 @@ public class PlayerActivity extends AppCompatActivity {
                 break;
             }
         }
+        MyMediaPlayer.nowPlaying = nowPlaying;
     }
 
     public void updateSong(View v) {
+        List<SongAndArtist> songs = MyMediaPlayer.songs;
+        int nowPlaying = MyMediaPlayer.nowPlaying;
+
         Intent intent = new Intent(this, UpdateSongActivity.class);
 
         Song song = songs.get(nowPlaying).song;
@@ -472,6 +256,9 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     public void addUpdateNotes(View v) {
+        List<SongAndArtist> songs = MyMediaPlayer.songs;
+        int nowPlaying = MyMediaPlayer.nowPlaying;
+
         Intent intent = new Intent(this, NoteActivity.class);
         intent.putExtra("songId", songs.get(nowPlaying).song.getId());
         startActivity(intent);
@@ -495,17 +282,18 @@ public class PlayerActivity extends AppCompatActivity {
             String songLyrics = data.getStringExtra(UpdateSongActivity.SONG_LYRICS);
             String songTranslation = data.getStringExtra(UpdateSongActivity.SONG_TRANSLATION);
 
+            List<SongAndArtist> songs = MyMediaPlayer.songs;
+            int nowPlaying = MyMediaPlayer.nowPlaying;
+
             Song song = new Song(songs.get(nowPlaying).song.getSource(), songLyrics, songTranslation);
             song.setId(songs.get(nowPlaying).song.getId());
             song.setArtistId(artistId);
             song.setName(songName);
 
-            Log.d("mytag", "" + songs.get(nowPlaying).song.getId() + " " + artistId + " " + artistName + " " + songName + " " + songs.get(nowPlaying).song.getSource() + " " + songLyrics + " " + songTranslation);
-
             String button = data.getStringExtra("button");
-            SongViewModel songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
             if (button.equals("delete")) {
                 songViewModel.delete(song);
+                player.stop();
 
                 Log.d("mytag", "Deleted");
                 finish();
@@ -518,6 +306,9 @@ public class PlayerActivity extends AppCompatActivity {
 
                 Log.d("mytag", "Updated");
             }
+        }
+        else {
+            Log.d("mytag", "return");
         }
     }
 

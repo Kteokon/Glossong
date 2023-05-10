@@ -13,8 +13,6 @@ import com.example.glossong.model.EngToRusWord;
 import com.example.glossong.model.EngWord;
 import com.example.glossong.model.RusToEngWord;
 import com.example.glossong.model.RusWord;
-import com.example.glossong.model.SongDictionary;
-import com.example.glossong.model.SongWithWords;
 import com.example.glossong.model.Translation;
 import com.example.glossong.model.WordInSongs;
 import com.example.glossong.tuple.WordTuple;

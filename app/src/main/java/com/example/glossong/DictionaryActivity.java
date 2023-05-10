@@ -2,7 +2,6 @@ package com.example.glossong;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.example.glossong.fragment.MyAlertDialog;
 import com.example.glossong.listener.ItemClickListener;
@@ -18,7 +19,6 @@ import com.example.glossong.model.EngToRusWord;
 import com.example.glossong.model.RusToEngWord;
 import com.example.glossong.model.RusWord;
 import com.example.glossong.model.Song;
-import com.example.glossong.model.SongDictionary;
 import com.example.glossong.model.Translation;
 import com.example.glossong.model.Word;
 import com.example.glossong.model.WordInSongs;
@@ -41,7 +41,10 @@ public class DictionaryActivity extends AppCompatActivity implements ItemClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dictionary);
 
+        // TODO: сделать редактирование слов
+
         wordList = findViewById(R.id.wordList);
+        ImageButton backButton = findViewById(R.id.backButton);
         wordList.setLayoutManager(new LinearLayoutManager(this));
 
         Intent intent = getIntent();
@@ -70,6 +73,13 @@ public class DictionaryActivity extends AppCompatActivity implements ItemClickLi
                 }
             });
         }
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override

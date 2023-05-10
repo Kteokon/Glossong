@@ -5,19 +5,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.glossong.listener.ItemClickListener;
 import com.example.glossong.model.EngToRusWord;
 import com.example.glossong.model.RusWord;
 import com.example.glossong.model.Word;
-import com.example.glossong.viewmodel.WordViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +58,7 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Cu
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("mytag", view.getBackground().toString());
                 listener.onItemClick(word);
             }
         });
@@ -76,7 +75,7 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Cu
 
     public static class CustomViewHolder extends RecyclerView.ViewHolder {
         private TextView wordSpellingTV, wordTranslationTV;
-        Button deleteButton;
+        ImageButton deleteButton;
         ConstraintLayout cl;
 
         public CustomViewHolder(View view) {
