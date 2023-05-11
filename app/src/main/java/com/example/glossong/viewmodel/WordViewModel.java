@@ -92,4 +92,8 @@ public class WordViewModel extends AndroidViewModel {
     public WordInSongs getWordInSongs(Long wordId) {
         return this.repository.getWordInSongs(wordId);
     }
+
+    public LiveData<EngToRusWord> getEngToRusWordsByEngId(Long engWordId) {
+        return this.repository.getEngToRusWordsByEngId(engWordId);
+    }
 }

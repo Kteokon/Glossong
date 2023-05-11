@@ -10,8 +10,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.glossong.fragment.ChooseTaskDialog;
+import com.example.glossong.fragment.WordDialog;
 import com.example.glossong.listener.ItemClickListener;
 import com.example.glossong.model.EngToRusWord;
 import com.example.glossong.model.RusWord;
@@ -23,12 +27,12 @@ import java.util.List;
 public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.CustomViewHolder> {
     private List<EngToRusWord> engWords = new ArrayList<>();
     LayoutInflater inflater;
-    ItemClickListener listener;
+    FragmentManager fragmentManager;
 
-    public DictionaryAdapter(Context context, List<EngToRusWord> engWords, ItemClickListener listener) {
+    public DictionaryAdapter(Context context, List<EngToRusWord> engWords, FragmentManager fragmentManager) {
         this.inflater = LayoutInflater.from(context);
         this.engWords = engWords;
-        this.listener = listener;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -55,11 +59,11 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Cu
         word = wordWithTranslations.word;
         holder.wordSpellingTV.setText(word.getSpelling());
         holder.wordTranslationTV.setText(translations);
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+        holder.updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("mytag", view.getBackground().toString());
-                listener.onItemClick(word);
+                DialogFragment dialog = WordDialog.newInstance(wordWithTranslations.word.getId());
+                dialog.show(fragmentManager, "tag");
             }
         });
     }
@@ -69,13 +73,9 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Cu
         return engWords.size();
     }
 
-    public Word getWordAt(int position) {
-        return engWords.get(position).word;
-    }
-
     public static class CustomViewHolder extends RecyclerView.ViewHolder {
         private TextView wordSpellingTV, wordTranslationTV;
-        ImageButton deleteButton;
+        ImageButton updateButton;
         ConstraintLayout cl;
 
         public CustomViewHolder(View view) {
@@ -83,7 +83,7 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Cu
 
             wordSpellingTV = view.findViewById(R.id.wordSpelling);
             wordTranslationTV = view.findViewById(R.id.wordTranslation);
-            deleteButton = view.findViewById(R.id.deleteButton);
+            updateButton = view.findViewById(R.id.updateButton);
             cl = view.findViewById(R.id.recycle_view_layout);
         }
     }

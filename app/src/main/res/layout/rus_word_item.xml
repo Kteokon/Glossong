@@ -24,43 +24,30 @@
             <TextView
                 android:id="@+id/wordSpelling"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/wordTranslation"
+                app:layout_constraintEnd_toStartOf="@+id/deleteButton"
                 app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.5" />
 
-            <TextView
-                android:id="@+id/wordTranslation"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/updateButton"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/wordSpelling"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5" />
-
             <ImageButton
-                android:id="@+id/updateButton"
+                android:id="@+id/deleteButton"
                 android:layout_width="50sp"
                 android:layout_height="50sp"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="10sp"
                 android:background="#00FFFFFF"
                 android:cropToPadding="false"
                 android:onClick="deleteWord"
                 android:scaleType="centerInside"
-                android:src="@drawable/update_song"
-                app:tint="@color/button"
+                android:src="@drawable/delete_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/wordTranslation"
+                app:layout_constraintStart_toEndOf="@+id/wordSpelling"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.5" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -68,8 +55,6 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="10sp"
-            android:layout_marginBottom="10sp"
             android:background="@android:color/darker_gray"/>
 
     </LinearLayout>

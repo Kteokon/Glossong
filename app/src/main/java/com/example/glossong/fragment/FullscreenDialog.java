@@ -267,7 +267,7 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
 
     private void addWord() {
         WordViewModel wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
-        boolean firstWord = false, secondWord = false; // Первое слово - английское, второе - русское
+        boolean firstWord = false; // Первое слово - английское, его наличие в бд
         List<WordTuple> word = wordViewModel.getWordBySpelling(clickedWord); // Находим слово по написанию
         EngWord engWord;
         long engWordId;
@@ -280,6 +280,7 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
             engWordId = word.get(0).wordId; // Старое слово, получаем его id
         }
         for (int i = 0; i < translations.size(); i++) { // Цикл по переводам
+            boolean secondWord = false; // Второе - русское, его наличие в бд
             word = wordViewModel.getWordBySpelling(translations.get(i)); // Находим слово по написанию
             RusWord rusWord;
             long rusWordId;

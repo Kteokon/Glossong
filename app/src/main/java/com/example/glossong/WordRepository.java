@@ -180,6 +180,19 @@ public class WordRepository {
         return dictionary;
     }
 
+    public LiveData<EngToRusWord> getEngToRusWordsByEngId(Long engWordId) {
+        FindEngToRusWordsByEngIdTask task = new FindEngToRusWordsByEngIdTask(wordDAO);
+        LiveData<EngToRusWord> engToRusWord = null;
+        try {
+            engToRusWord = task.execute(engWordId).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return engToRusWord;
+    }
+
     // region AsyncTasks
     public static class InsertEngWordTask extends AsyncTask<EngWord, Void, Long> {
         private WordDAO wordsDAO;
@@ -377,6 +390,21 @@ public class WordRepository {
             Long engWordId = longs[0];
             List<Dictionary> dictionary = wordsDAO.findSongDictionaryByWordId(songId, engWordId);
             return dictionary;
+        }
+    }
+
+    public static class FindEngToRusWordsByEngIdTask extends AsyncTask<Long, Void, LiveData<EngToRusWord>> {
+        private WordDAO wordsDAO;
+
+        private FindEngToRusWordsByEngIdTask(WordDAO wordsDAO) {
+            this.wordsDAO = wordsDAO;
+        }
+
+        @Override
+        protected LiveData<EngToRusWord> doInBackground(Long... longs) {
+            Long engWordId = longs[0];
+            LiveData<EngToRusWord> engToRusWord = wordsDAO.findEngToRusWordsByEngId(engWordId);
+            return engToRusWord;
         }
     }
     //endregion

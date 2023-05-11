@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
 import com.example.glossong.fragment.MyAlertDialog;
+import com.example.glossong.fragment.WordDialog;
 import com.example.glossong.listener.ItemClickListener;
 import com.example.glossong.model.Dictionary;
 import com.example.glossong.model.EngToRusWord;
@@ -27,7 +29,7 @@ import com.example.glossong.viewmodel.WordViewModel;
 
 import java.util.List;
 
-public class DictionaryActivity extends AppCompatActivity implements ItemClickListener {
+public class DictionaryActivity extends AppCompatActivity {
     RecyclerView wordList;
 
     WordViewModel wordViewModel;
@@ -48,27 +50,23 @@ public class DictionaryActivity extends AppCompatActivity implements ItemClickLi
         wordList.setLayoutManager(new LinearLayoutManager(this));
 
         Intent intent = getIntent();
-        type = intent.getStringExtra("words");
-        icl = this;
+        songId = intent.getLongExtra("songId", -1);
 
         wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
-        if (type.equals("song")) {
-            songId = intent.getLongExtra("songId", 0);
-            if (songId != 0) {
-                wordViewModel.getSongDictionary(songId).observe(this, new Observer<List<EngToRusWord>>() {
-                    @Override
-                    public void onChanged(List<EngToRusWord> words) {
-                        DictionaryAdapter adapter = new DictionaryAdapter(getApplicationContext(), words, icl);
-                        wordList.setAdapter(adapter);
-                    }
-                });
-            }
-        }
-        else {
+        if (songId == -1) {
             wordViewModel.getEngWords().observe(this, new Observer<List<EngToRusWord>>() {
                 @Override
                 public void onChanged(List<EngToRusWord> words) {
-                    DictionaryAdapter adapter = new DictionaryAdapter(getApplicationContext(), words, icl);
+                    DictionaryAdapter adapter = new DictionaryAdapter(getApplicationContext(), words, getSupportFragmentManager());
+                    wordList.setAdapter(adapter);
+                }
+            });
+        }
+        else {
+            wordViewModel.getSongDictionary(songId).observe(this, new Observer<List<EngToRusWord>>() {
+                @Override
+                public void onChanged(List<EngToRusWord> words) {
+                    DictionaryAdapter adapter = new DictionaryAdapter(getApplicationContext(), words, getSupportFragmentManager());
                     wordList.setAdapter(adapter);
                 }
             });
@@ -82,37 +80,49 @@ public class DictionaryActivity extends AppCompatActivity implements ItemClickLi
         });
     }
 
-    @Override
-    public void onItemClick(Word item) {
-        FragmentManager manager = getSupportFragmentManager();
-        MyAlertDialog dialog = new MyAlertDialog();
-        dialog.setItem(item);
-        dialog.show(manager, "deleteWordAlert");
-    }
-
-    public void deleteWord(Word item) {
-        long engWordId;
-        WordTuple word = wordViewModel.getWordBySpelling(item.getSpelling()).get(0); // Получаем все слова по написанию, всегда выдаёт одно, английское слово точно есть
-        engWordId = word.wordId;
-        if (type.equals("song")) { // Если слово больше не содержится ни в одной из песен, то удалить слово, его перевод и связь
+    public void deleteWord(EngToRusWord engToRusWord) {
+        long engWordId = engToRusWord.word.getId();
+        Log.d("mytag", "deleting");
+        if (songId == -1) {
             WordInSongs wordInSongs = wordViewModel.getWordInSongs(engWordId); // Получаем слово и песни, в которых оно находится
-            if (wordInSongs.songs.size() == 1) { // Если слово привязано только к одной песне
-                deleteTranslations(item, engWordId);
-            }
-            deleteDictionary(songId, engWordId);
-        }
-        else {
-            WordInSongs wordInSongs = wordViewModel.getWordInSongs(engWordId); // Получаем слово и песни, в которых оно находится
-            deleteTranslations(item, engWordId);
+            deleteTranslations(engToRusWord);
             List<Song> songs = wordInSongs.songs;
             for (Song song: songs) {
                 deleteDictionary(song.getId(), engWordId);
             }
         }
+        else {  // Если слово больше не содержится ни в одной из песен, то удалить слово, его перевод и связь
+            WordInSongs wordInSongs = wordViewModel.getWordInSongs(engWordId); // Получаем слово и песни, в которых оно находится
+            if (wordInSongs.songs.size() == 1) { // Если слово привязано только к одной песне
+                deleteTranslations(engToRusWord);
+            }
+            deleteDictionary(songId, engWordId);
+        }
     }
 
-    private void deleteTranslations(Word item, long engWordId) {
-        EngToRusWord engWord = wordViewModel.getEngToRusWords(item.getSpelling()); // Получаем английское слово и его переводы
+    public void deleteTranslation(EngToRusWord engToRusWord, int index, WordDialog wordDialog) { // TODO: делать проверку наличия перевода в других словах
+        if (engToRusWord.translations.size() == 1) { // Если у слова остался один перевод, то удаляем полностью
+            deleteWord(engToRusWord);
+            wordDialog.dismiss();
+        }
+        else { // Иначе удаляем перевод и связь с ним
+            Long engWordId = engToRusWord.word.getId();
+            Long rusWordId = engToRusWord.translations.get(index).getId();
+
+            RusToEngWord rusToEngWord = wordViewModel.getRusToEngWords(engToRusWord.translations.get(index).getSpelling());
+            if (rusToEngWord.translations.size() == 1) { // Если этот перевод есть только в одном слове, то удаляем перевод
+                wordViewModel.delete(engToRusWord.translations.get(index));
+            } // Иначе оставить для других слов
+
+            Translation translation = new Translation();
+            translation.setEngWordId(engWordId);
+            translation.setRusWordId(rusWordId);
+            wordViewModel.delete(translation);
+        }
+    }
+
+    private void deleteTranslations(EngToRusWord engWord) {
+        long engWordId = engWord.word.getId();
         List<RusWord> translations = engWord.translations; // Переводы английского слова
         wordViewModel.delete(engWord.word); // Удаляем английское слово и получаем id
         for (RusWord rusWord: translations) {

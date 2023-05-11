@@ -54,6 +54,9 @@ public interface WordDAO {
     @Transaction
     @Query("SELECT eng_word.* FROM eng_word INNER JOIN dictionary ON eng_word.id=dictionary.eng_word_id WHERE dictionary.song_id=:id ")
     LiveData<List<EngToRusWord>> findSongDictionary(Long id);
+    @Transaction
+    @Query("SELECT * FROM eng_word where id=:id")
+    LiveData<EngToRusWord> findEngToRusWordsByEngId(Long id);
 
     @Transaction
     @Query("SELECT * FROM eng_word where spelling=:spelling")
