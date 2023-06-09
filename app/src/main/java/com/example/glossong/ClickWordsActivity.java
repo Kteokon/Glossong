@@ -27,7 +27,6 @@ import java.util.Set;
 public class ClickWordsActivity extends AppCompatActivity {
     LinearLayout llEngWords, llRusWords;
     TextView first, second;
-    Button exitButton, restartButton;
 
     WordViewModel wordViewModel;
 
@@ -69,17 +68,14 @@ public class ClickWordsActivity extends AppCompatActivity {
         restartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                restartButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        llEngWords.removeAllViews();
-                        llRusWords.removeAllViews();
-                        new ClickWordsActivity.SetWordsTask(getApplicationContext(), words).execute();
-                    }
-                });
+                wordsClicked = 0;
+                llEngWords.removeAllViews();
+                llRusWords.removeAllViews();
+                new ClickWordsActivity.SetWordsTask(getApplicationContext(), words).execute();
             }
         });
     }
+
     class SetWordsTask extends AsyncTask<Void, Void, Map<String, String>> {
         Context context;
         List<EngToRusWord> words;
@@ -153,7 +149,7 @@ public class ClickWordsActivity extends AppCompatActivity {
 
     public void onWordClick(View v) {
         String tag = v.getTag().toString();
-        int selectedColor = getResources().getColor(R.color.yellow);
+        int selectedColor = getResources().getColor(R.color.selected);
         LinearLayout parent = (LinearLayout) v.getParent();
         switch(wordsClicked) {
             case 0: {

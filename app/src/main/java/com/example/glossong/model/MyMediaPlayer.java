@@ -4,11 +4,15 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.example.glossong.Functions;
+import com.example.glossong.PlayerActivity;
 import com.example.glossong.R;
 import com.google.android.exoplayer2.DeviceInfo;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -32,6 +36,7 @@ public class MyMediaPlayer {
     public static SeekBar seekBar;
     public static TextView timeOverTV, songTV, artistTV;
     public static ImageButton playButton, updateButton;
+    public static RelativeLayout nowPlayingSong;
 
     public static int nowPlaying = -1;
     public static List<SongAndArtist> songs;
@@ -42,23 +47,12 @@ public class MyMediaPlayer {
 
             instance.addListener(new ExoPlayer.Listener() {
                 @Override
-                public void onTracksChanged(Tracks tracks) {
-                    Player.Listener.super.onTracksChanged(tracks);
-
-                    Log.d("Player listener", "On track changed");
-                }
-
-                @Override
                 public void onEvents(Player player, Player.Events events) {
                     Player.Listener.super.onEvents(player, events);
-                    Log.d("Player listener", "On events");
-                }
-
-                @Override
-                public void onTimelineChanged(Timeline timeline, int reason) {
-                    Player.Listener.super.onTimelineChanged(timeline, reason);
-
-                    Log.d("Player listener", "On timeline changed");
+                    Log.d("Player listener", "On events " + events.get(0));
+                    if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
+                        player.prepare();
+                    }
                 }
 
                 @Override
@@ -78,43 +72,8 @@ public class MyMediaPlayer {
                     else {
                         updateButton.setVisibility(View.VISIBLE);
                     }
-                    timeOverTV.setText(getSongDuration((int) instance.getDuration()));
+//                    timeOverTV.setText(Functions.getSongDuration(instance.getDuration()));
                     seekBar.setMax((int) (instance.getDuration() / 1000));
-                }
-
-                @Override
-                public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
-                    Player.Listener.super.onMediaMetadataChanged(mediaMetadata);
-
-                    Log.d("Player listener", "On media metadata changed");
-                }
-
-                @Override
-                public void onPlaylistMetadataChanged(MediaMetadata mediaMetadata) {
-                    Player.Listener.super.onPlaylistMetadataChanged(mediaMetadata);
-
-                    Log.d("Player listener", "On playlist metadata changed");
-                }
-
-                @Override
-                public void onIsLoadingChanged(boolean isLoading) {
-                    Player.Listener.super.onIsLoadingChanged(isLoading);
-
-                    Log.d("Player listener", "On is loading changed");
-                }
-
-                @Override
-                public void onAvailableCommandsChanged(Player.Commands availableCommands) {
-                    Player.Listener.super.onAvailableCommandsChanged(availableCommands);
-
-                    Log.d("Player listener", "On available commands changed");
-                }
-
-                @Override
-                public void onTrackSelectionParametersChanged(TrackSelectionParameters parameters) {
-                    Player.Listener.super.onTrackSelectionParametersChanged(parameters);
-
-                    Log.d("Player listener", "On track selection parameters changed");
                 }
 
                 @Override
@@ -123,23 +82,9 @@ public class MyMediaPlayer {
 
                     if (playbackState == ExoPlayer.STATE_READY) {
                         Log.d("PlayerListener", "State ready");
-                        timeOverTV.setText(getSongDuration((int) instance.getDuration()));
+                        timeOverTV.setText(Functions.getSongDuration(instance.getDuration()));
                         seekBar.setMax((int) (instance.getDuration() / 1000));
                     }
-                }
-
-                @Override
-                public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
-                    Player.Listener.super.onPlayWhenReadyChanged(playWhenReady, reason);
-
-                    Log.d("Player listener", "On play when ready changed");
-                }
-
-                @Override
-                public void onPlaybackSuppressionReasonChanged(int playbackSuppressionReason) {
-                    Player.Listener.super.onPlaybackSuppressionReasonChanged(playbackSuppressionReason);
-
-                    Log.d("Player listener", "On playback suppression reason changed");
                 }
 
                 @Override
@@ -158,31 +103,25 @@ public class MyMediaPlayer {
                 }
 
                 @Override
-                public void onRepeatModeChanged(int repeatMode) {
-                    Player.Listener.super.onRepeatModeChanged(repeatMode);
-
-                    Log.d("Player listener", "On repeat mode changed");
-                }
-
-                @Override
-                public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
-                    Player.Listener.super.onShuffleModeEnabledChanged(shuffleModeEnabled);
-
-                    Log.d("Player listener", "On shuffle mode enabled changed");
-                }
-
-                @Override
                 public void onPlayerError(PlaybackException error) {
                     Player.Listener.super.onPlayerError(error);
 
-                    Log.d("Player error", "On player error " + error.toString());
-                }
+                    Log.d("Player error", "On player error " + error.getErrorCodeName());
 
-                @Override
-                public void onPlayerErrorChanged(@Nullable PlaybackException error) {
-                    Player.Listener.super.onPlayerErrorChanged(error);
-
-                    Log.d("Player error", "On player error changed " + error.toString());
+                    switch (error.getErrorCodeName()) {
+                        case "ERROR_CODE_IO_FILE_NOT_FOUND": {
+                            Toast.makeText(context, "Ошибка: файл не найден", Toast.LENGTH_LONG).show();
+                            break;
+                        }
+                        case "ERROR_CODE_IO_NETWORK_CONNECTION_FAILED": {
+                            // TODO: делать проверку на наличие файла на телефоне (Glossong music/<Исполнитель - название>
+                            Toast.makeText(context, "Ошибка: отсутствует соединение с сетью", Toast.LENGTH_LONG).show();
+                            break;
+                        }
+                        default: {
+                            Toast.makeText(context, "Неизвестная ошибка", Toast.LENGTH_LONG).show();
+                        }
+                    }
                 }
 
                 @Override
@@ -193,108 +132,8 @@ public class MyMediaPlayer {
 
                     Log.d("Player listener", "On position discontinuity old position new position " + oldPosition.mediaItemIndex + " " + newPosition.mediaItemIndex);
                 }
-
-                @Override
-                public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-                    Player.Listener.super.onPlaybackParametersChanged(playbackParameters);
-
-                    Log.d("Player listener", "On playback parameters changed");
-                }
-
-                @Override
-                public void onSeekBackIncrementChanged(long seekBackIncrementMs) {
-                    Player.Listener.super.onSeekBackIncrementChanged(seekBackIncrementMs);
-
-                    Log.d("Player listener", "On seek back increment changed");
-                }
-
-                @Override
-                public void onSeekForwardIncrementChanged(long seekForwardIncrementMs) {
-                    Player.Listener.super.onSeekForwardIncrementChanged(seekForwardIncrementMs);
-
-                    Log.d("Player listener", "On seek forward increment changed");
-                }
-
-                @Override
-                public void onMaxSeekToPreviousPositionChanged(long maxSeekToPreviousPositionMs) {
-                    Player.Listener.super.onMaxSeekToPreviousPositionChanged(maxSeekToPreviousPositionMs);
-
-                    Log.d("Player listener", "On max seek to previous position changed");
-                }
-
-                @Override
-                public void onAudioSessionIdChanged(int audioSessionId) {
-                    Player.Listener.super.onAudioSessionIdChanged(audioSessionId);
-
-                    Log.d("Player listener", "On audio session id changed");
-                }
-
-                @Override
-                public void onAudioAttributesChanged(AudioAttributes audioAttributes) {
-                    Player.Listener.super.onAudioAttributesChanged(audioAttributes);
-
-                    Log.d("Player listener", "On audio attributes changed");
-                }
-
-                @Override
-                public void onVolumeChanged(float volume) {
-                    Player.Listener.super.onVolumeChanged(volume);
-
-                    Log.d("Player listener", "On volume changed");
-                }
-
-                @Override
-                public void onSkipSilenceEnabledChanged(boolean skipSilenceEnabled) {
-                    Player.Listener.super.onSkipSilenceEnabledChanged(skipSilenceEnabled);
-
-                    Log.d("Player listener", "On skip silence enabled changed");
-                }
-
-                @Override
-                public void onDeviceInfoChanged(DeviceInfo deviceInfo) {
-                    Player.Listener.super.onDeviceInfoChanged(deviceInfo);
-
-                    Log.d("Player listener", "On device info changed");
-                }
-
-                @Override
-                public void onDeviceVolumeChanged(int volume, boolean muted) {
-                    Player.Listener.super.onDeviceVolumeChanged(volume, muted);
-
-                    Log.d("Player listener", "On device volume changed");
-                }
-
-                @Override
-                public void onCues(CueGroup cueGroup) {
-                    Player.Listener.super.onCues(cueGroup);
-
-                    Log.d("Player listener", "On cues cue group");
-                }
-
-                @Override
-                public void onMetadata(Metadata metadata) {
-                    Player.Listener.super.onMetadata(metadata);
-
-                    Log.d("Player listener", "On metadata");
-                }
             });
         }
         return instance;
-    }
-
-    private static String getSongDuration(int dur) {
-        int songMin = dur / 1000 / 60;
-        int songSec = dur / 1000 % 60;
-        String res = Integer.toString(songMin) + ":";
-        if (songMin / 10 == 0) {
-            res = "0" + res;
-        }
-        if (songSec / 10 == 0) {
-            res = res + "0" + Integer.toString(songSec);
-        }
-        else {
-            res = res + Integer.toString(songSec);
-        }
-        return res;
     }
 }

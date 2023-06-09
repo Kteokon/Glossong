@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".MatchWordsActivity">
 
 
@@ -76,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20sp"
             android:layout_marginEnd="10sp"
-            android:backgroundTint="#8F94F8"
+            android:backgroundTint="@color/button"
             android:text="Выйти" />
 
         <Button
@@ -85,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10sp"
             android:layout_marginEnd="20sp"
-            android:backgroundTint="#8F94F8"
+            android:backgroundTint="@color/button"
             android:text="Начать сначала" />
     </LinearLayout>
 

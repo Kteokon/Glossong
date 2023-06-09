@@ -15,11 +15,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.glossong.fragment.DeleteSongDialog;
 import com.example.glossong.model.Artist;
 import com.example.glossong.model.ArtistAndSongs;
+import com.example.glossong.model.EngToRusWord;
+import com.example.glossong.model.MyMediaPlayer;
 import com.example.glossong.model.TranslatorResponse;
 import com.example.glossong.model.YandexTranslation;
 import com.example.glossong.viewmodel.ArtistViewModel;
+import com.example.glossong.viewmodel.WordViewModel;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -30,6 +34,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class UpdateSongActivity extends AppCompatActivity {
@@ -45,6 +50,8 @@ public class UpdateSongActivity extends AppCompatActivity {
 
     EditText songNameET, artistNameET;
     String artistName, songName, songLyrics, songTranslation;
+
+    boolean deleteWords = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +79,7 @@ public class UpdateSongActivity extends AppCompatActivity {
         });
     }
 
-    public void onClick(View v) throws ExecutionException, InterruptedException {
+    public void onClick(View v) {
         String newName = songNameET.getText().toString();
         String newArtist = artistNameET.getText().toString();
         String newLyrics = songLyrics;
@@ -100,6 +107,9 @@ public class UpdateSongActivity extends AppCompatActivity {
             }
             else {
                 if (v.getId() == R.id.deleteButton){
+
+                    MyMediaPlayer.nowPlayingSong.setVisibility(View.GONE);
+                    intent.putExtra("deleteWords", deleteWords);
                     intent.putExtra("button", "delete");
                 }
                 else {
@@ -108,9 +118,15 @@ public class UpdateSongActivity extends AppCompatActivity {
                 }
             }
 
-            Long artistId;
+            Long artistId = null;
 
-            artistId = artistViewModel.getArtistIdByName(newArtist);
+            try {
+                artistId = artistViewModel.getArtistIdByName(newArtist);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             if (artistId == null) {  // Введёного исполнителя нет в бд
                 if (artist.songs.size() == 1 && artist.artist.getId() != 1) { // Если у прошлого исполнителя больше нет произведений и он не неизвестен, то обновить его имя на новое введённое
                     artistId = artist.artist.getId();
@@ -144,6 +160,16 @@ public class UpdateSongActivity extends AppCompatActivity {
         startActivityForResult(intent, ADD_SONG_LYRICS);
     }
 
+    public void deleteSong(View v) {
+        DeleteSongDialog dialog = new DeleteSongDialog();
+        dialog.setItems(v);
+        dialog.show(getSupportFragmentManager(), "deleteSongAlert");
+    }
+
+    public void setDeleteWords(boolean deleteWords) {
+        this.deleteWords = deleteWords;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
@@ -169,11 +195,16 @@ public class UpdateSongActivity extends AppCompatActivity {
                 String checkLyrics = newLyrics.replaceAll(" ", "");
                 if (!checkLyrics.equals("")) {
                     songLyrics = newLyrics;
-                    TranslatorTask task = new TranslatorTask();
-                    task.execute(songLyrics);
+                    if (new Functions().NetworkIsConnected(getApplicationContext())) {
+                        TranslatorTask task = new TranslatorTask();
+                        task.execute(songLyrics);
+                    }
+                    else {
+                        Toast.makeText(this, "Нет доступа к интернету для перевода файла", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else {
-                    Toast.makeText(this, "В указанном файле нет текста", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "В указанном файле нет текста", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -193,12 +224,12 @@ public class UpdateSongActivity extends AppCompatActivity {
                 String textToTranslate = strings[0];
                 URL url = new URL(set_server_url);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestProperty("Authorization", "Api-Key " + theKey);
+                urlConnection.setRequestProperty("Authorization", "Api-Key AQVNwN2UTjKub9Iw5BTNBPyI8j-OqGUJhlMEAYEL");
                 urlConnection.setDoOutput(true);
 
                 OutputStream stream = urlConnection.getOutputStream();
                 String postData = "{\n" + "\"folderId\": \"" + folderId + "\",\r\n" +
-                        "\"texts\": ['" + textToTranslate + "'],\r\n" +
+                        "\"texts\": [\"" + textToTranslate + "\"],\r\n" +
                         "\"targetLanguageCode\": \"" + targetLanguageCode + "\"}";
                 stream.write(postData.getBytes());
 
@@ -208,12 +239,13 @@ public class UpdateSongActivity extends AppCompatActivity {
                 Gson gson = new Gson();
                 response = gson.fromJson(reader, TranslatorResponse.class);
                 urlConnection.disconnect();
-                YandexTranslation[] texts = response.getTranslations();
+                YandexTranslation[] texts = response.translations;
                 for (int i = 0; i < texts.length; i++) {
-                    res += texts[i].getText() + " ";
+                    res += texts[i].text + " ";
                 }
             } catch (IOException e) {
-                Log.d("Error", "Error: " + e.getLocalizedMessage());
+                Log.d("Error", "Error: " + e.getMessage());
+                Toast.makeText(getApplicationContext(), "Ошибка доступа к переводчику", Toast.LENGTH_SHORT).show();
             }
             return res;
         }
@@ -222,6 +254,7 @@ public class UpdateSongActivity extends AppCompatActivity {
         protected void onPostExecute(String res){
             super.onPostExecute(res);
             songTranslation = res;
+            Toast.makeText(getApplicationContext(), "Текст переведён", Toast.LENGTH_SHORT).show();
         }
     }
 }

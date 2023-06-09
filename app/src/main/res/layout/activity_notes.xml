@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F2EBFF"
+    android:background="@color/background"
     tools:context=".MainActivity">
 
     <RelativeLayout
@@ -32,7 +32,7 @@
             android:cropToPadding="false"
             android:src="@drawable/back_icon"
             android:background="#00FFFFFF"
-            app:tint="#8F94F8" />
+            app:tint="@color/button" />
 
     </RelativeLayout>
 

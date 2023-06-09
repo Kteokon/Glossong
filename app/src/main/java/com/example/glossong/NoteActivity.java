@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class NoteActivity extends AppCompatActivity {
-    public static final String NOTE_TEXT = "com.example.glossong.NOTE_TEXT";
-
     NoteViewModel noteViewModel;
 
     Note note;

@@ -162,10 +162,6 @@ public class MatchWordsActivity extends AppCompatActivity {
                 line.setOrientation(LinearLayout.HORIZONTAL);
                 textView.setLayoutParams(params);
 
-                int color = getResources().getColor(R.color.white, Resources.getSystem().newTheme());
-                leftPart.setBackgroundColor(color);
-                rightPart.setBackgroundColor(color);
-
                 leftPart.setText(word);
                 line.setTag(word);
                 textView.setTag(word);

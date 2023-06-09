@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#8F94F8"
+    android:background="@color/background"
     tools:context=".NoteActivity">
 
     <androidx.cardview.widget.CardView
@@ -61,7 +61,7 @@
                     android:onClick="cancelChanges"
                     android:scaleType="centerInside"
                     android:src="@drawable/cancel_changes"
-                    app:tint="#8F94F8" />
+                    app:tint="@color/button" />
 
                 <ImageButton
                     android:id="@+id/deleteButton"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2EBFF"
+    android:background="@color/background"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -34,7 +34,7 @@
             android:padding="4sp"
             android:scaleType="centerInside"
             android:src="@drawable/task_button"
-            app:tint="#8F94F8" />
+            app:tint="@color/button" />
 
         <ImageButton
             android:id="@+id/dictionaryButton"
@@ -48,7 +48,7 @@
             android:padding="4sp"
             android:scaleType="centerInside"
             android:src="@drawable/dictionary_icon"
-            app:tint="#8F94F8" />
+            app:tint="@color/button" />
 
         <ImageButton
             android:id="@+id/notesButton"
@@ -62,7 +62,7 @@
             android:padding="4sp"
             android:scaleType="centerInside"
             android:src="@drawable/note_icon"
-            app:tint="#8F94F8" />
+            app:tint="@color/button" />
 
         <ImageButton
             android:id="@+id/addSongButton"
@@ -76,7 +76,7 @@
             android:padding="5sp"
             android:scaleType="centerInside"
             android:src="@drawable/add_song"
-            app:tint="#8F94F8" />
+            app:tint="@color/button" />
 
     </RelativeLayout>
 
@@ -97,8 +97,8 @@
     <RelativeLayout
         android:id="@+id/nowPlaying"
         android:layout_width="match_parent"
-        android:layout_height="50sp"
-        android:background="@color/red"
+        android:layout_height="wrap_content"
+        android:background="#94CEEC"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,6 +106,49 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
+
+        <ImageButton
+            android:id="@+id/playButton"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20sp"
+            android:layout_marginTop="10sp"
+            android:layout_marginEnd="20sp"
+            android:layout_marginBottom="10sp"
+            android:adjustViewBounds="true"
+            android:background="#00FFFFFF"
+            android:onClick="playSong"
+            android:scaleType="centerInside"
+            android:src="@drawable/play_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/button" />
+
+        <LinearLayout
+            android:id="@+id/nameAndArtist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_toEndOf="@+id/playButton">
+
+            <TextView
+                android:id="@+id/songName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+                android:text="Без названия"
+                android:textSize="18sp"/>
+            <TextView
+                android:id="@+id/artistName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+                android:layout_marginBottom="5sp"
+                android:text="Исполнитель неизвестен"
+                android:textSize="16sp" />
+        </LinearLayout>
 
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

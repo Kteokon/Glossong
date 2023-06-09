@@ -73,12 +73,20 @@ public class WordViewModel extends AndroidViewModel {
         return this.repository.getSongDictionary(songId);
     }
 
+    public List<EngToRusWord> getSongWords(Long songId) {
+        return this.repository.getSongWords(songId);
+    }
+
     public List<WordTuple> getWordBySpelling(String spelling) {
         return this.repository.getWordBySpelling(spelling);
     }
 
     public List<Dictionary> getSongDictionaryByWordId(Long songId, Long engWordId) {
         return this.repository.getSongDictionaryByWordId(songId, engWordId);
+    }
+
+    public Translation getTranslation(Translation translation) {
+        return this.repository.getTranslation(translation);
     }
 
     public EngToRusWord getEngToRusWords(String spelling) {

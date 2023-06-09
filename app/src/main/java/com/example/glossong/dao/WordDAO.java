@@ -42,10 +42,12 @@ public interface WordDAO {
     @Delete
     int delete(Translation... translations);
     @Delete
-    int delete(Dictionary... dictionaries);
+    void delete(Dictionary... dictionaries);
 
     @Query("SELECT * FROM dictionary where song_id LIKE :songId AND eng_word_id LIKE :engWordId")
     List<Dictionary> findSongDictionaryByWordId(Long songId, Long engWordId);
+    @Query("SELECT * FROM translation where eng_word_id LIKE :engWordId AND rus_word_id LIKE :rusWordId")
+    Translation findTranslation(Long engWordId, Long rusWordId);
     @Query("SELECT spelling, id as wordId FROM eng_word where spelling=:spelling union SELECT spelling, id as wordId FROM rus_word where spelling=:spelling")
     List<WordTuple> findWordBySpelling(String spelling);
     @Transaction
@@ -54,6 +56,9 @@ public interface WordDAO {
     @Transaction
     @Query("SELECT eng_word.* FROM eng_word INNER JOIN dictionary ON eng_word.id=dictionary.eng_word_id WHERE dictionary.song_id=:id ")
     LiveData<List<EngToRusWord>> findSongDictionary(Long id);
+    @Transaction
+    @Query("SELECT eng_word.* FROM eng_word INNER JOIN dictionary ON eng_word.id=dictionary.eng_word_id WHERE dictionary.song_id=:id ")
+    List<EngToRusWord> findSongWords(Long id);
     @Transaction
     @Query("SELECT * FROM eng_word where id=:id")
     LiveData<EngToRusWord> findEngToRusWordsByEngId(Long id);

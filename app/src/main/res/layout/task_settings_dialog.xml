@@ -34,7 +34,7 @@
                     android:cropToPadding="false"
                     android:src="@drawable/save_changes"
                     android:background="#00FFFFFF"
-                    app:tint="#8F94F8" />
+                    app:tint="@color/button" />
 
                 <ImageButton
                     android:id="@+id/closeButton"
@@ -47,7 +47,7 @@
                     android:src="@drawable/cancel_changes"
                     android:background="#00FFFFFF"
                     android:layout_marginStart="10sp"
-                    app:tint="#8F94F8" />
+                    app:tint="@color/button" />
             </RelativeLayout>
 
             <TextView

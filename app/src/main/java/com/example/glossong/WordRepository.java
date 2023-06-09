@@ -167,6 +167,19 @@ public class WordRepository {
         return dictionary;
     }
 
+    public Translation getTranslation(Translation _translation) {
+        FindTranslationTask task = new FindTranslationTask(wordDAO);
+        Translation translation = null;
+        try {
+            translation = task.execute(_translation).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return translation;
+    }
+
     public LiveData<List<EngToRusWord>> getSongDictionary(Long songId) {
         FindSongDictionaryTask task = new FindSongDictionaryTask(wordDAO);
         LiveData<List<EngToRusWord>> dictionary = null;
@@ -178,6 +191,19 @@ public class WordRepository {
             e.printStackTrace();
         }
         return dictionary;
+    }
+
+    public List<EngToRusWord> getSongWords(Long songId) {
+        FindSongWordsTask task = new FindSongWordsTask(wordDAO);
+        List<EngToRusWord> words = null;
+        try {
+            words = task.execute(songId).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return words;
     }
 
     public LiveData<EngToRusWord> getEngToRusWordsByEngId(Long engWordId) {
@@ -373,6 +399,37 @@ public class WordRepository {
             Long songId = longs[0];
             LiveData<List<EngToRusWord>> dictionary = wordsDAO.findSongDictionary(songId);
             return dictionary;
+        }
+    }
+
+    public static class FindTranslationTask extends AsyncTask<Translation, Void, Translation> {
+        private WordDAO wordsDAO;
+
+        private FindTranslationTask(WordDAO wordsDAO) {
+            this.wordsDAO = wordsDAO;
+        }
+
+        @Override
+        protected Translation doInBackground(Translation... translations) {
+            Long engWordId = translations[0].getEngWordId();
+            Long rusWordId = translations[0].getRusWordId();
+            Translation translation = wordsDAO.findTranslation(engWordId, rusWordId);
+            return translation;
+        }
+    }
+
+    public static class FindSongWordsTask extends AsyncTask<Long, Void, List<EngToRusWord>> {
+        private WordDAO wordsDAO;
+
+        private FindSongWordsTask(WordDAO wordsDAO) {
+            this.wordsDAO = wordsDAO;
+        }
+
+        @Override
+        protected List<EngToRusWord> doInBackground(Long... longs) {
+            Long songId = longs[0];
+            List<EngToRusWord> words = wordsDAO.findSongWords(songId);
+            return words;
         }
     }
 

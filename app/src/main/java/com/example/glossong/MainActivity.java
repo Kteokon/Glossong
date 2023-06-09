@@ -17,11 +17,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.glossong.fragment.ChooseTaskDialog;
 import com.example.glossong.model.Artist;
+import com.example.glossong.model.MyMediaPlayer;
 import com.example.glossong.model.SongAndArtist;
 import com.example.glossong.model.Song;
 import com.example.glossong.viewmodel.ArtistViewModel;
@@ -37,16 +42,54 @@ public class MainActivity extends AppCompatActivity {
 
     DBHelperWithLoader DBHelper;
     MyRoomDB myRoomDB;
-    ExoPlayer player;
 
     private SongViewModel songViewModel;
     private RecyclerView songList;
-    ImageButton addSongButton, dictionaryButton, taskButton, allNotesButton;
+    ImageButton addSongButton, dictionaryButton, taskButton, allNotesButton, playButton;
+    RelativeLayout nowPlayingSong;
+    LinearLayout nameAndArtistLL;
+    TextView songTV, artistTV;
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        MyMediaPlayer.songTV = songTV;
+        MyMediaPlayer.artistTV = artistTV;
+        MyMediaPlayer.playButton = playButton;
+        int nowPlaying = MyMediaPlayer.nowPlaying;
+        if (nowPlaying != -1) {
+            Song song = MyMediaPlayer.songs.get(nowPlaying).song;
+            Artist artist = MyMediaPlayer.songs.get(nowPlaying).artist;
+            songTV.setText(song.getName());
+            artistTV.setText(artist.getName());
+
+            ExoPlayer player = MyMediaPlayer.getInstance(getApplicationContext());
+            playButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (player.isPlaying()) {
+                        player.pause();
+                    }
+                    else {
+                        player.play();
+                    }
+                }
+            });
+
+            if (player.isPlaying()) {
+                playButton.setImageResource(R.drawable.pause_icon);
+            }
+            else {
+                playButton.setImageResource(R.drawable.play_icon);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_with_navigaton);
 
         DBHelper = new DBHelperWithLoader(this);
         myRoomDB = MyRoomDB.create(this, false);
@@ -57,6 +100,13 @@ public class MainActivity extends AppCompatActivity {
         dictionaryButton = findViewById(R.id.dictionaryButton);
         taskButton = findViewById(R.id.taskButton);
         allNotesButton = findViewById(R.id.notesButton);
+        nowPlayingSong = findViewById(R.id.nowPlaying);
+        nameAndArtistLL = findViewById(R.id.nameAndArtist);
+        songTV = findViewById(R.id.songName);
+        artistTV = findViewById(R.id.artistName);
+        playButton = findViewById(R.id.playButton);
+
+        MyMediaPlayer.nowPlayingSong = nowPlayingSong;
 
         songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
         songViewModel.getSongs().observe(this, new Observer<List<SongAndArtist>>() {
@@ -104,6 +154,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_activity2, menu);
+        return true;
+    }
+
     private void addSongFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -134,13 +191,11 @@ public class MainActivity extends AppCompatActivity {
                 uri = resultData.getData();
                 String properPath = getProperPath(uri.getPath());
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                Log.d("mytag", properPath);
                 retriever.setDataSource(properPath);
                 String songName = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
                 String artistName = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
 
                 Long artistId = null;
-                Log.d("mytag", "" + "a");
                 if (artistName == null) {
                     artistId = 1L;
                 }
@@ -158,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
                         artistId = artistViewModel.insert(newArtist);
                     }
                 }
-
                 Song song = new Song(properPath, "", "");
                 song.setArtistId(artistId);
                 if (!(songName == null)) {

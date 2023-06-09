@@ -5,7 +5,7 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F1EAFE"
+    android:background="@color/background"
     android:elevation="0dp">
 
     <RelativeLayout
@@ -167,7 +167,7 @@
             android:id="@+id/songImage"
             android:layout_width="250sp"
             android:layout_height="250sp"
-            android:background="@drawable/song_image"
+            android:background="@drawable/song_image_3"
             app:layout_constraintBottom_toTopOf="@+id/seekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -242,12 +242,12 @@
             android:background="#00FFFFFF"
             android:onClick="playSong"
             android:scaleType="centerInside"
-            android:src="@drawable/pause_icon"
+            android:src="@drawable/play_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/skipRightButton"
             app:layout_constraintStart_toEndOf="@+id/skipLeftButton"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#9095F9" />
+            app:tint="#066DA1" />
 
         <ImageButton
             android:id="@+id/skipLeftButton"
@@ -267,7 +267,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/shuffleButton"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#9095F9" />
+            app:tint="#066DA1" />
 
         <ImageButton
             android:id="@+id/shuffleButton"
@@ -283,7 +283,7 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#9095F9" />
+            app:tint="#066DA1" />
 
         <ImageButton
             android:id="@+id/skipRightButton"
@@ -304,7 +304,7 @@
             app:layout_constraintStart_toEndOf="@+id/playButton"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.488"
-            app:tint="#9095F9" />
+            app:tint="#066DA1" />
 
         <ImageButton
             android:id="@+id/loopButton"
@@ -321,7 +321,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/skipRightButton"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#9095F9" />
+            app:tint="#066DA1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

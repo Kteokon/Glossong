@@ -1,6 +1,7 @@
 package com.example.glossong;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -13,18 +14,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.example.glossong.fragment.MyAlertDialog;
+import com.example.glossong.fragment.AddWordDialog;
 import com.example.glossong.fragment.WordDialog;
-import com.example.glossong.listener.ItemClickListener;
 import com.example.glossong.model.Dictionary;
 import com.example.glossong.model.EngToRusWord;
 import com.example.glossong.model.RusToEngWord;
 import com.example.glossong.model.RusWord;
 import com.example.glossong.model.Song;
 import com.example.glossong.model.Translation;
-import com.example.glossong.model.Word;
 import com.example.glossong.model.WordInSongs;
-import com.example.glossong.tuple.WordTuple;
 import com.example.glossong.viewmodel.WordViewModel;
 
 import java.util.List;
@@ -33,9 +31,7 @@ public class DictionaryActivity extends AppCompatActivity {
     RecyclerView wordList;
 
     WordViewModel wordViewModel;
-    ItemClickListener icl;
 
-    String type;
     Long songId;
 
     @Override
@@ -43,10 +39,9 @@ public class DictionaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dictionary);
 
-        // TODO: сделать редактирование слов
-
         wordList = findViewById(R.id.wordList);
-        ImageButton backButton = findViewById(R.id.backButton);
+        ImageButton backButton = findViewById(R.id.back);
+        ImageButton addWordButton = findViewById(R.id.addWord);
         wordList.setLayoutManager(new LinearLayoutManager(this));
 
         Intent intent = getIntent();
@@ -78,6 +73,14 @@ public class DictionaryActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        addWordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialog = AddWordDialog.newInstance(songId);
+                dialog.show(getSupportFragmentManager(), "tag");
+            }
+        });
     }
 
     public void deleteWord(EngToRusWord engToRusWord) {
@@ -100,7 +103,7 @@ public class DictionaryActivity extends AppCompatActivity {
         }
     }
 
-    public void deleteTranslation(EngToRusWord engToRusWord, int index, WordDialog wordDialog) { // TODO: делать проверку наличия перевода в других словах
+    public void deleteTranslation(EngToRusWord engToRusWord, int index, WordDialog wordDialog) {
         if (engToRusWord.translations.size() == 1) { // Если у слова остался один перевод, то удаляем полностью
             deleteWord(engToRusWord);
             wordDialog.dismiss();

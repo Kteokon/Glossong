@@ -15,7 +15,7 @@ public class MyDragListener implements View.OnDragListener{
                 return event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN);
             }
             case DragEvent.ACTION_DRAG_ENTERED: case DragEvent.ACTION_DRAG_EXITED: {
-                v.invalidate(); // перерисовка view без изменения размеров
+                v.invalidate();
                 return true;
             }
             case DragEvent.ACTION_DRAG_ENDED: {

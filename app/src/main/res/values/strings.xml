@@ -8,4 +8,7 @@
     <string name="yandex_dictionary_server_url">https://dictionary.yandex.net/api/v1/dicservice.json/lookup</string>
     <string name="translatorKey">AQVNwN2UTjKub9Iw5BTNBPyI8j-OqGUJhlMEAYEL</string>
     <string name="dictionaryKey">dict.1.1.20230215T074722Z.df778d51e0ebdb09.260d7a33d7d4fa79d4df13fc548ce0817721cc4b</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

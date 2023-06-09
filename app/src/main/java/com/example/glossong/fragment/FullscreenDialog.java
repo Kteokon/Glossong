@@ -1,8 +1,10 @@
 package com.example.glossong.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -19,12 +21,14 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.glossong.Functions;
 import com.example.glossong.R;
 import com.example.glossong.model.Dictionary;
 import com.example.glossong.model.EngWord;
@@ -113,19 +117,25 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
                         ClickableSpan clickableSpan = new ClickableSpan() {
                             @Override
                             public void onClick(@NonNull View widget) {
-                                bottomMenu.setVisibility(View.VISIBLE);
                                 DictionaryTask task = new DictionaryTask();
                                 clickedWord = word;
                                 String set_server_url = getString(R.string.yandex_dictionary_server_url);
                                 String theKey = getString(R.string.dictionaryKey);
                                 String lang = getString(R.string.lang);
                                 String what = set_server_url + "?key=" + theKey + "&lang=" + lang + "&text=" + word;
-                                try {
-                                    translations = task.execute(what).get();
-                                } catch (ExecutionException e) {
-                                    e.printStackTrace();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                if (new Functions().NetworkIsConnected(getContext())) {
+                                    try {
+                                        translations = task.execute(what).get();
+                                        bottomMenu.setVisibility(View.VISIBLE);
+                                    } catch (ExecutionException e) {
+                                        Log.d("mytag", e.getLocalizedMessage());
+                                    } catch (InterruptedException e) {
+                                        Log.d("mytag", e.getLocalizedMessage());
+                                    }
+                                }
+                                else {
+                                    bottomMenu.setVisibility(View.GONE);
+                                    Toast.makeText(getContext(), "Нет доступа к интернету", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
@@ -152,23 +162,26 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
         lyricsSV.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//                double scrollViewHeight = lyricsSV.getChildAt(0).getBottom() - lyricsSV.getHeight();
-//                double getScrollY = lyricsSV.getScrollY();
-//                double scrollPosition = (getScrollY / scrollViewHeight) * 100d;
-//                Log.d("mytag", "" + (int) scrollPosition);
-//                translationSV.scrollTo(0, (int) scrollPosition);
-                translationSV.scrollTo(0, lyricsSV.getScrollY());
+                translationSV.scrollTo(0, scrollY);
+
+//                double scrollLyricsHeight = lyricsTV.getHeight() - lyricsSV.getHeight();
+//                double scrollTranslationHeight = translationTV.getHeight() - translationSV.getHeight();
+//
+//                double x = (scrollY / scrollLyricsHeight) * 100;
+//                Log.d("mytag", "" + scrollLyricsHeight  + " " + scrollTranslationHeight + " " + scrollY + " " + x);
+//                translationSV.scrollTo(0, (int) ((x * scrollTranslationHeight) / 100));
             }
         });
 
         translationSV.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//                double scrollViewHeight = translationSV.getChildAt(0).getBottom() - translationSV.getHeight();
-//                double getScrollY = translationSV.getScrollY();
-//                double scrollPosition = (getScrollY / scrollViewHeight) * 100d;
-//                lyricsSV.scrollTo(0, (int) scrollPosition);
-                lyricsSV.scrollTo(0, translationSV.getScrollY());
+                lyricsSV.scrollTo(0, scrollY);
+
+//                double scrollTranslationHeight = translationTV.getHeight() - translationSV.getHeight();
+//                double scrollLyricsHeight = lyricsTV.getHeight() - lyricsSV.getHeight();
+//                double x = (scrollY / scrollTranslationHeight) * 100;
+//                lyricsSV.scrollTo(0, (int) ((x * scrollLyricsHeight) / 100));
             }
         });
 
@@ -215,7 +228,7 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
                 break;
             }
             case R.id.addToDictionaryButton: {
-                addWord();
+                new Functions().addWord(this, clickedWord, translations, songId);
                 break;
             }
         }
@@ -262,49 +275,6 @@ public class FullscreenDialog extends DialogFragment implements View.OnClickList
                 }
             }
             wordsTV.setText(res);
-        }
-    }
-
-    private void addWord() {
-        WordViewModel wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
-        boolean firstWord = false; // Первое слово - английское, его наличие в бд
-        List<WordTuple> word = wordViewModel.getWordBySpelling(clickedWord); // Находим слово по написанию
-        EngWord engWord;
-        long engWordId;
-        if (word.size() == 0 || word.get(0) == null) { // Если таких нет
-            engWord = new EngWord(clickedWord); // То это новое слово
-            engWordId = wordViewModel.insert(engWord);
-            firstWord = true;
-        }
-        else {
-            engWordId = word.get(0).wordId; // Старое слово, получаем его id
-        }
-        for (int i = 0; i < translations.size(); i++) { // Цикл по переводам
-            boolean secondWord = false; // Второе - русское, его наличие в бд
-            word = wordViewModel.getWordBySpelling(translations.get(i)); // Находим слово по написанию
-            RusWord rusWord;
-            long rusWordId;
-            if (word.size() == 0 || word.get(0) == null) { // Если таких нет
-                rusWord = new RusWord(translations.get(i)); // То это новое слово
-                rusWordId = wordViewModel.insert(rusWord);
-                secondWord = true;
-            }
-            else {
-                rusWordId = word.get(0).wordId; // Старое слово, получаем его id
-            }
-            if (firstWord || secondWord) { // Если хотя бы одно из слов новое, то добавляем в общий словарь
-                Translation translation = new Translation();
-                translation.setEngWordId(engWordId);
-                translation.setRusWordId(rusWordId);
-                wordViewModel.insert(translation);
-            }
-            List<Dictionary> dictionary = wordViewModel.getSongDictionaryByWordId(songId, engWordId);
-            if (dictionary.size() == 0) {
-                Dictionary newDictionary = new Dictionary();
-                newDictionary.setSongId(this.songId);
-                newDictionary.setEngWordId(engWordId);
-                wordViewModel.insert(newDictionary);
-            }
         }
     }
 }

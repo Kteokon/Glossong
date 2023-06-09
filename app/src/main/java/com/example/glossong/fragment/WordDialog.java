@@ -7,8 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,8 +42,6 @@ import java.io.Serializable;
 import java.util.List;
 
 public class WordDialog extends DialogFragment implements View.OnClickListener {
-    WordViewModel wordViewModel;
-
     EngToRusWord engToRusWord;
 
     public static WordDialog newInstance(Long engWordId) {
@@ -64,6 +65,11 @@ public class WordDialog extends DialogFragment implements View.OnClickListener {
         ImageButton closeButton = view.findViewById(R.id.closeButton);
         ImageButton deleteButton = view.findViewById(R.id.deleteButton);
         TextView engWordTV = view.findViewById(R.id.engWord);
+        ImageButton expandButton = view.findViewById(R.id.expand);
+        RelativeLayout addTranslationLayout = view.findViewById(R.id.addTranslationLayout);
+        EditText translationET = view.findViewById(R.id.translation);
+        ImageButton addTranslationButton = view.findViewById(R.id.addTranslation);
+        ImageButton closeTranslationButton = view.findViewById(R.id.closeTranslation);
         RecyclerView translationList = view.findViewById(R.id.translationList);
         translationList.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
 
@@ -90,6 +96,55 @@ public class WordDialog extends DialogFragment implements View.OnClickListener {
         });
 
         deleteButton.setOnClickListener(this);
+
+        expandButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                expandButton.setVisibility(View.GONE);
+                addTranslationLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        addTranslationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userTranslation = String.valueOf(translationET.getText());
+                String checkTranslation = userTranslation.replace(" ", "");
+                if (checkTranslation.equals("")) {
+                    Toast.makeText(getContext(), "Введите перевод", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    List<WordTuple> word = wordViewModel.getWordBySpelling(userTranslation);
+                    Long rusWordId = null;
+                    if (word.size() == 0 || word.get(0) == null) {
+                        RusWord rusWord = new RusWord(userTranslation);
+                        rusWordId = wordViewModel.insert(rusWord);
+                    }
+                    else {
+                        rusWordId = word.get(0).wordId;
+                    }
+
+                    Translation translation = new Translation();
+                    translation.setEngWordId(engWordId);
+                    translation.setRusWordId(rusWordId);
+                    if (wordViewModel.getTranslation(translation) == null) { // Если связи между словами нет
+                        wordViewModel.insert(translation);
+                        translationET.setText("");
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Данный перевод уже есть", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
+        closeTranslationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                expandButton.setVisibility(View.VISIBLE);
+                addTranslationLayout.setVisibility(View.GONE);
+            }
+        });
         return view;
     }
 

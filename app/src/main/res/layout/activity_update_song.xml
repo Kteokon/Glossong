@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".UpdateSongActivity"
     android:elevation="0dp">
 
@@ -67,13 +68,13 @@
             android:id="@+id/deleteButton"
             android:layout_width="50sp"
             android:layout_height="50sp"
-            android:layout_marginStart="10sp"
-            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10sp"
             android:background="#00FFFFFF"
             android:cropToPadding="false"
+            android:onClick="deleteSong"
             android:scaleType="centerInside"
-            android:onClick="onClick"
             android:src="@drawable/delete_icon" />
 
     </RelativeLayout>
