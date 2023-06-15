@@ -26,12 +26,14 @@ import java.util.List;
 
 public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.CustomViewHolder> {
     private List<EngToRusWord> engWords = new ArrayList<>();
+    Long songId;
     LayoutInflater inflater;
     FragmentManager fragmentManager;
 
-    public DictionaryAdapter(Context context, List<EngToRusWord> engWords, FragmentManager fragmentManager) {
+    public DictionaryAdapter(Context context, List<EngToRusWord> engWords, Long songId, FragmentManager fragmentManager) {
         this.inflater = LayoutInflater.from(context);
         this.engWords = engWords;
+        this.songId = songId;
         this.fragmentManager = fragmentManager;
     }
 
@@ -62,7 +64,7 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Cu
         holder.updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment dialog = WordDialog.newInstance(wordWithTranslations.word.getId());
+                DialogFragment dialog = WordDialog.newInstance(wordWithTranslations.word.getId(), songId);
                 dialog.show(fragmentManager, "tag");
             }
         });

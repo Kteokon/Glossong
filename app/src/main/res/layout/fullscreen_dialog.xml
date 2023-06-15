@@ -16,8 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10sp"
             android:layout_centerVertical="true"
-            android:backgroundTint="@color/button"
-            android:text="eng"/>
+            android:text="анг"/>
 
         <Button
             android:id="@+id/translationButton"
@@ -25,8 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/lyricsButton"
             android:layout_centerVertical="true"
-            android:backgroundTint="@color/button"
-            android:text="ru"/>
+            android:text="рус"/>
 
         <ImageButton
             android:id="@+id/closeButton"
@@ -37,9 +35,8 @@
             android:layout_centerVertical="true"
             android:scaleType="centerInside"
             android:cropToPadding="false"
-            android:src="@drawable/cancel_changes"
-            android:background="#00FFFFFF"
-            app:tint="@color/button" />
+            android:src="@drawable/close_square"
+            android:background="#00FFFFFF" />
 
     </RelativeLayout>
 
@@ -123,9 +120,8 @@
                 android:layout_centerHorizontal="true"
                 android:scaleType="centerInside"
                 android:cropToPadding="false"
-                android:src="@drawable/add_icon"
-                android:background="#00FFFFFF"
-                app:tint="@color/button" />
+                android:src="@drawable/archive_add"
+                android:background="#00FFFFFF" />
 
             <ScrollView
                 android:layout_width="wrap_content"
@@ -154,5 +150,4 @@
             </ScrollView>
         </RelativeLayout>
     </LinearLayout>
-
 </RelativeLayout>

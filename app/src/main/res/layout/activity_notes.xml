@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background"
     tools:context=".MainActivity">
 
     <RelativeLayout
@@ -28,11 +27,10 @@
             android:layout_height="50sp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:scaleType="centerInside"
-            android:cropToPadding="false"
-            android:src="@drawable/back_icon"
             android:background="#00FFFFFF"
-            app:tint="@color/button" />
+            android:cropToPadding="false"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_square" />
 
     </RelativeLayout>
 

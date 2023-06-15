@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.glossong.fragment.MyAlertDialog;
@@ -23,14 +24,18 @@ import com.example.glossong.model.RusWord;
 import java.util.List;
 
 public class TranslationsAdapter extends RecyclerView.Adapter<TranslationsAdapter.CustomViewHolder> {
+    ViewModelStoreOwner viewModelStoreOwner;
     EngToRusWord engToRusWord;
+    Long songId;
     LayoutInflater inflater;
     WordDialog wordDialog;
     FragmentManager fragmentManager;
 
-    public TranslationsAdapter(Context context, EngToRusWord engToRusWord, WordDialog wordDialog, FragmentManager fragmentManager) {
+    public TranslationsAdapter(Context context, ViewModelStoreOwner viewModelStoreOwner, EngToRusWord engToRusWord, Long songId, WordDialog wordDialog, FragmentManager fragmentManager) {
         this.inflater = LayoutInflater.from(context);
+        this.viewModelStoreOwner = viewModelStoreOwner;
         this.engToRusWord = engToRusWord;
+        this.songId = songId;
         this.wordDialog = wordDialog;
         this.fragmentManager = fragmentManager;
     }
@@ -52,7 +57,7 @@ public class TranslationsAdapter extends RecyclerView.Adapter<TranslationsAdapte
             @Override
             public void onClick(View v) {
                 TranslationAlertDialog dialog = new TranslationAlertDialog();
-                dialog.setItems(engToRusWord, index, wordDialog);
+                dialog.setItems(viewModelStoreOwner, engToRusWord, index, songId, wordDialog);
                 dialog.show(fragmentManager, "deleteWordAlert");
             }
         });

@@ -52,7 +52,7 @@ public class DictionaryActivity extends AppCompatActivity {
             wordViewModel.getEngWords().observe(this, new Observer<List<EngToRusWord>>() {
                 @Override
                 public void onChanged(List<EngToRusWord> words) {
-                    DictionaryAdapter adapter = new DictionaryAdapter(getApplicationContext(), words, getSupportFragmentManager());
+                    DictionaryAdapter adapter = new DictionaryAdapter(getApplicationContext(), words, songId, getSupportFragmentManager());
                     wordList.setAdapter(adapter);
                 }
             });
@@ -61,7 +61,7 @@ public class DictionaryActivity extends AppCompatActivity {
             wordViewModel.getSongDictionary(songId).observe(this, new Observer<List<EngToRusWord>>() {
                 @Override
                 public void onChanged(List<EngToRusWord> words) {
-                    DictionaryAdapter adapter = new DictionaryAdapter(getApplicationContext(), words, getSupportFragmentManager());
+                    DictionaryAdapter adapter = new DictionaryAdapter(getApplicationContext(), words, songId, getSupportFragmentManager());
                     wordList.setAdapter(adapter);
                 }
             });

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <Button
+            android:id="@+id/lyricsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10sp"
+            android:layout_centerVertical="true"
+            android:text="Оригинал"
+            android:fontFamily="@font/proximanova_bold" />
+
+        <Button
+            android:id="@+id/translationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/lyricsButton"
+            android:layout_centerVertical="true"
+            android:text="Перевод"
+            android:fontFamily="@font/proximanova_bold" />
+
+    </RelativeLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10sp"
+        android:layout_marginEnd="10sp"
+        android:layout_below="@+id/buttons"
+        android:orientation="vertical" >
+
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/svlyrics"
+            android:layout_width="match_parent"
+            android:layout_height="0sp"
+            android:layout_weight="1"
+            android:layout_above="@+id/svtranslation" >
+
+            <TextView
+                android:id="@+id/lyrics"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:scrollbars="vertical"
+                android:isScrollContainer="true"
+                android:text="Текст"
+                android:textSize="18sp"
+                android:fontFamily="@font/proximanova_regular" />
+        </ScrollView>
+
+        <View
+            android:id="@+id/separateLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10sp"
+            android:layout_marginBottom="10sp"
+            android:visibility="gone"
+            android:background="@android:color/darker_gray"/>
+
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/svtranslation"
+            android:layout_width="match_parent"
+            android:layout_height="0sp"
+            android:layout_weight="1"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/translation"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:scrollbars="vertical"
+                android:isScrollContainer="true"
+                android:text="Перевод"
+                android:textSize="18sp"
+                android:fontFamily="@font/proximanova_regular" />
+        </ScrollView>
+
+        <RelativeLayout
+            android:id="@+id/bottomMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10sp"
+            android:layout_marginBottom="10sp"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/addToDictionaryButton"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_alignParentStart="true"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerInside"
+                android:cropToPadding="false"
+                android:src="@drawable/archive_add"
+                android:background="#00FFFFFF" />
+
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="15sp"
+                android:layout_alignBottom="@+id/addToDictionaryButton"
+                android:layout_toEndOf="@+id/addToDictionaryButton">
+
+                <HorizontalScrollView
+                    android:id="@+id/hscroll"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/words"
+                            android:textSize="18sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Переводы"
+                            android:fontFamily="@font/proximanova_regular" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </ScrollView>
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

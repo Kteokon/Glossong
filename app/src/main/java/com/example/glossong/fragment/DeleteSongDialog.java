@@ -18,8 +18,6 @@ import com.example.glossong.model.Song;
 import com.example.glossong.model.SongAndArtist;
 
 public class DeleteSongDialog extends DialogFragment {
-    View v;
-
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -40,7 +38,7 @@ public class DeleteSongDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ((UpdateSongActivity) getActivity()).setDeleteWords(deleteWords[0]);
-                        ((UpdateSongActivity) getActivity()).onClick(v);
+                        ((UpdateSongActivity) getActivity()).saveChanges("delete");
                     }
                 }
                 ).setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
@@ -51,9 +49,5 @@ public class DeleteSongDialog extends DialogFragment {
         builder.setCancelable(true);
 
         return builder.create();
-    }
-
-    public void setItems(View v) {
-        this.v = v;
     }
 }

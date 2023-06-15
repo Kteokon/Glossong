@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".PlayerActivity">
+
+    <item
+        android:id="@+id/songButton"
+        android:title="Вернуться к песне"
+        android:icon="@drawable/music_square"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/addWordButton"
+        android:title="Добавить слово"
+        android:icon="@drawable/archive_add"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/lyrics"
+        android:title="Текст песни"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/dictionaryButton"
+        android:title="Словарь песни"
+        android:icon="@drawable/archive_book"
+        app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/noteButton"
+        android:title="Заметка песни"
+        android:icon="@drawable/note"
+        app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/editButton"
+        android:title="Редактировать песню"
+        android:icon="@drawable/edit"
+        app:showAsAction="collapseActionView" />
+</menu>

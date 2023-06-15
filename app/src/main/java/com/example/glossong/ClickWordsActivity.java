@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -30,8 +31,6 @@ public class ClickWordsActivity extends AppCompatActivity {
 
     WordViewModel wordViewModel;
 
-    int emptyColor;
-
     List<EngToRusWord> words;
     int wordsClicked = 0;
     Long amountOfWords;
@@ -45,7 +44,6 @@ public class ClickWordsActivity extends AppCompatActivity {
         llRusWords = findViewById(R.id.rusWords);
         Button exitButton = findViewById(R.id.exitButton);
         Button restartButton = findViewById(R.id.restartButton);
-        emptyColor = getResources().getColor(R.color.nothing);
 
         amountOfWords = TaskSettings.amountOfWords;
 
@@ -118,10 +116,20 @@ public class ClickWordsActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
+                params.setMargins(20, 10, 10, 0);
                 engWord.setLayoutParams(params);
+                params.setMargins(10, 10, 20, 0);
                 rusWord.setLayoutParams(params);
                 engWord.setTextSize(25);
                 rusWord.setTextSize(25);
+                engWord.setPadding(30, 30, 30, 30);
+                rusWord.setPadding(30, 30, 30, 30);
+                engWord.setBackgroundResource(R.drawable.rounded_corner);
+                rusWord.setBackgroundResource(R.drawable.rounded_corner);
+                engWord.setTextColor(getColor(R.color.jet));
+                rusWord.setTextColor(getColor(R.color.jet));
+                engWord.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.proximanova_bold));
+                rusWord.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.proximanova_bold));
 
                 engWord.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -148,18 +156,15 @@ public class ClickWordsActivity extends AppCompatActivity {
     }
 
     public void onWordClick(View v) {
-        String tag = v.getTag().toString();
-        int selectedColor = getResources().getColor(R.color.selected);
-        LinearLayout parent = (LinearLayout) v.getParent();
         switch(wordsClicked) {
             case 0: {
-                v.setBackgroundColor(selectedColor);
+                v.setBackgroundResource(R.drawable.selected);
                 wordsClicked++;
                 first = (TextView) v;
                 break;
             }
             case 1: {
-                v.setBackgroundColor(selectedColor);
+                v.setBackgroundResource(R.drawable.selected);
                 LinearLayout secondParent = (LinearLayout) v.getParent();
                 LinearLayout firstParent = (LinearLayout) first.getParent();
                 if (firstParent.getId() != secondParent.getId()) {
@@ -168,8 +173,10 @@ public class ClickWordsActivity extends AppCompatActivity {
                     new WordMatchTask(first, second).execute(1);
                 }
                 else {
-                    first.setBackgroundColor(emptyColor);
-                    first = (TextView) v;
+                    if (!first.equals(v)) {
+                        first.setBackgroundResource(R.drawable.rounded_corner);
+                        first = (TextView) v;
+                    }
                 }
                 break;
             }
@@ -195,12 +202,12 @@ public class ClickWordsActivity extends AppCompatActivity {
             super.onPostExecute(unused);
 
             if (first.getTag().equals(second.getTag())){
-                first.setVisibility(View.INVISIBLE);
-                second.setVisibility(View.INVISIBLE);
+                first.setVisibility(View.GONE);
+                second.setVisibility(View.GONE);
             }
             else{
-                first.setBackgroundColor(emptyColor);
-                second.setBackgroundColor(emptyColor);
+                first.setBackgroundResource(R.drawable.rounded_corner);
+                second.setBackgroundResource(R.drawable.rounded_corner);
             }
             wordsClicked = 0;
         }

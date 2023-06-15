@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/allSongs"
+            android:icon="@drawable/music_playlist"
+            android:iconTint="?android:attr/textColor"
+            android:title="Список песен" />
+        <item
+            android:id="@+id/taskButton"
+            android:icon="@drawable/task"
+            android:iconTint="?android:attr/textColor"
+            android:title="Упражнения"
+            android:checkable="false" />
+        <item
+            android:id="@+id/dictionaryButton"
+            android:icon="@drawable/archive_book"
+            android:iconTint="?android:attr/textColor"
+            android:title="Общий словарь" />
+        <item
+            android:id="@+id/notesButton"
+            android:icon="@drawable/note"
+            android:iconTint="?android:attr/textColor"
+            android:title="Все заметки" />
+        <item
+            android:id="@+id/addSongButton"
+            android:icon="@drawable/music_add"
+            android:iconTint="?android:attr/textColor"
+            android:title="Добавить песню"
+            android:checkable="false" />
+    </group>
+
+    <item
+        android:title=""
+        android:enabled="false" />
+
+    <group>
+        <item
+            android:id="@+id/help"
+            android:icon="@drawable/information"
+            android:title="Справка" />
+    </group>
+</menu>

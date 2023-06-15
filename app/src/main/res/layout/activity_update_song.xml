@@ -1,96 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     tools:context=".UpdateSongActivity"
-    android:elevation="0dp">
+    android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/menuButtons"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10sp"
-        android:layout_marginStart="10sp"
-        android:layout_marginEnd="10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        android:outlineSpotShadowColor="@color/nothing"
+        android:outlineAmbientShadowColor="@color/nothing">
 
-        <ImageButton
-            android:id="@+id/saveButton"
-            android:layout_width="50sp"
-            android:layout_height="50sp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:background="#00FFFFFF"
-            android:cropToPadding="false"
-            android:scaleType="centerInside"
-            android:onClick="onClick"
-            android:src="@drawable/save_changes"
-            app:tint="@color/button" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
 
-        <ImageButton
-            android:id="@+id/cancelButton"
-            android:layout_width="50sp"
-            android:layout_height="50sp"
-            android:layout_marginStart="10sp"
-            android:layout_toEndOf="@+id/saveButton"
-            android:layout_centerVertical="true"
-            android:background="#00FFFFFF"
-            android:cropToPadding="false"
-            android:scaleType="centerInside"
-            android:onClick="onClick"
-            android:src="@drawable/cancel_changes"
-            app:tint="@color/button" />
-
-        <ImageButton
-            android:id="@+id/addLyricsButton"
-            android:layout_width="50sp"
-            android:layout_height="50sp"
-            android:layout_marginStart="10sp"
-            android:padding="5sp"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/cancelButton"
-            android:background="#00FFFFFF"
-            android:cropToPadding="false"
-            android:scaleType="centerInside"
-            android:onClick="addSongLyrics"
-            android:src="@drawable/add_lyrics"
-            app:tint="@color/button" />
-
-        <ImageButton
-            android:id="@+id/deleteButton"
-            android:layout_width="50sp"
-            android:layout_height="50sp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="10sp"
-            android:background="#00FFFFFF"
-            android:cropToPadding="false"
-            android:onClick="deleteSong"
-            android:scaleType="centerInside"
-            android:src="@drawable/delete_icon" />
-
-    </RelativeLayout>
+            <ImageButton
+                android:id="@+id/cancelButton"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_centerVertical="true"
+                android:background="#00FFFFFF"
+                android:cropToPadding="false"
+                android:onClick="cancelChanges"
+                android:scaleType="centerInside"
+                android:src="@drawable/close_square"
+                android:contentDescription="Отменить изменения" />
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/nameTexts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50sp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/menuButtons"
-        app:layout_constraintVertical_bias="0.022">
+        android:layout_marginTop="50sp">
 
         <EditText
             android:id="@+id/songName"
@@ -101,6 +47,7 @@
             android:layout_marginBottom="10sp"
             android:text="Без названия"
             android:textSize="36sp"
+            android:fontFamily="@font/proximanova_regular"
             app:layout_constraintBottom_toTopOf="@+id/artistName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -114,11 +61,96 @@
             android:layout_marginEnd="10sp"
             android:text="Исполнитель неизвестен"
             android:textSize="24sp"
+            android:fontFamily="@font/proximanova_regular"
             app:layout_constraintBottom_toTopOf="@+id/songName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/songName" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="50sp" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <Button
+                android:id="@+id/lyricsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="10sp"
+                android:text="Оригинал"
+                android:onClick="onClick" />
+
+            <Button
+                android:id="@+id/translationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/lyricsButton"
+                android:layout_centerVertical="true"
+                android:layout_margin="10sp"
+                android:text="Перевод"
+                android:onClick="onClick" />
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/editButton"-->
+<!--                android:layout_width="45sp"-->
+<!--                android:layout_height="45sp"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_marginEnd="15sp"-->
+<!--                android:background="@color/nothing"-->
+<!--                android:cropToPadding="false"-->
+<!--                android:scaleType="centerInside"-->
+<!--                android:src="@drawable/edit"-->
+<!--                android:onClick="onClick" />-->
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/songLyrics"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:background="@null"
+            android:focusableInTouchMode="false"
+            android:fontFamily="@font/proximanova_regular"
+            android:gravity="start"
+            android:text="Текст песни не загружен"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout2" />
+
+        <EditText
+            android:id="@+id/songTranslation"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:text="Перевод текста песни не загружен"
+            android:textSize="18sp"
+            android:fontFamily="@font/proximanova_regular"
+            android:gravity="start"
+            android:visibility="gone"
+            android:background="@null"
+            android:focusableInTouchMode="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout2" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

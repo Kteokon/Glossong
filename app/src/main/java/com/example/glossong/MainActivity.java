@@ -2,7 +2,11 @@ package com.example.glossong;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -12,19 +16,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.glossong.fragment.AddWordDialog;
+import com.example.glossong.fragment.AllSongsFragment;
 import com.example.glossong.fragment.ChooseTaskDialog;
+import com.example.glossong.fragment.DictionaryFragment;
+import com.example.glossong.fragment.NotesFragment;
 import com.example.glossong.model.Artist;
 import com.example.glossong.model.MyMediaPlayer;
 import com.example.glossong.model.SongAndArtist;
@@ -32,23 +42,126 @@ import com.example.glossong.model.Song;
 import com.example.glossong.viewmodel.ArtistViewModel;
 import com.example.glossong.viewmodel.SongViewModel;
 import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.util.MimeTypes;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final int PERMISSION_STORAGE = 101;
     private static final int ADD_SONG_REQUEST = 1;
 
     DBHelperWithLoader DBHelper;
     MyRoomDB myRoomDB;
 
+    private DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    MenuItem addWordButton;
+
     private SongViewModel songViewModel;
-    private RecyclerView songList;
-    ImageButton addSongButton, dictionaryButton, taskButton, allNotesButton, playButton;
+    ImageButton playButton;
     RelativeLayout nowPlayingSong;
     LinearLayout nameAndArtistLL;
     TextView songTV, artistTV;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        DBHelper = new DBHelperWithLoader(this);
+        myRoomDB = MyRoomDB.create(this, false);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navView);
+        navigationView.setNavigationItemSelectedListener(this);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, 0, 0);
+        getSupportActionBar().setTitle("Список песен");
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AllSongsFragment()).commit();
+            navigationView.setCheckedItem(R.id.allSongs);
+        }
+
+        nowPlayingSong = findViewById(R.id.nowPlaying);
+        nameAndArtistLL = findViewById(R.id.nameAndArtist);
+        songTV = findViewById(R.id.songName);
+        artistTV = findViewById(R.id.artistName);
+        playButton = findViewById(R.id.playButton);
+
+        MyMediaPlayer.nowPlayingSong = nowPlayingSong;
+
+        songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        addWordButton = menu.findItem(R.id.addWord);
+        addWordButton.setVisible(false);
+        addWordButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                DialogFragment dialog = AddWordDialog.newInstance(-1L);
+                dialog.show(getSupportFragmentManager(), "tag");
+                return true;
+            }
+        });
+        return true;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.allSongs: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AllSongsFragment()).commit();
+                getSupportActionBar().setTitle("Список песен");
+                addWordButton.setVisible(false);
+                break;
+            }
+            case R.id.taskButton: {
+                DialogFragment dialog = ChooseTaskDialog.newInstance();
+                dialog.show(getSupportFragmentManager(), "tag");
+                break;
+            }
+            case R.id.dictionaryButton: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DictionaryFragment()).commit();
+                getSupportActionBar().setTitle("Общий словарь");
+                addWordButton.setVisible(true);
+                break;
+            }
+            case R.id.notesButton: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotesFragment()).commit();
+                getSupportActionBar().setTitle("Все заметки");
+                addWordButton.setVisible(false);
+                break;
+            }
+            case R.id.addSongButton: {
+                addSongFile();
+                break;
+            }
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     protected void onRestart() {
@@ -58,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
         MyMediaPlayer.artistTV = artistTV;
         MyMediaPlayer.playButton = playButton;
         int nowPlaying = MyMediaPlayer.nowPlaying;
+
+        Log.d("mytag", "" + nowPlaying);
         if (nowPlaying != -1) {
             Song song = MyMediaPlayer.songs.get(nowPlaying).song;
             Artist artist = MyMediaPlayer.songs.get(nowPlaying).artist;
@@ -84,81 +199,6 @@ public class MainActivity extends AppCompatActivity {
                 playButton.setImageResource(R.drawable.play_icon);
             }
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_with_navigaton);
-
-        DBHelper = new DBHelperWithLoader(this);
-        myRoomDB = MyRoomDB.create(this, false);
-
-        songList = findViewById(R.id.songList);
-        songList.setLayoutManager(new LinearLayoutManager(this));
-        addSongButton = findViewById(R.id.addSongButton);
-        dictionaryButton = findViewById(R.id.dictionaryButton);
-        taskButton = findViewById(R.id.taskButton);
-        allNotesButton = findViewById(R.id.notesButton);
-        nowPlayingSong = findViewById(R.id.nowPlaying);
-        nameAndArtistLL = findViewById(R.id.nameAndArtist);
-        songTV = findViewById(R.id.songName);
-        artistTV = findViewById(R.id.artistName);
-        playButton = findViewById(R.id.playButton);
-
-        MyMediaPlayer.nowPlayingSong = nowPlayingSong;
-
-        songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
-        songViewModel.getSongs().observe(this, new Observer<List<SongAndArtist>>() {
-            @Override
-            public void onChanged(List<SongAndArtist> songs) {
-                SongListAdapter adapter = new SongListAdapter(getApplicationContext(), songs);
-                songList.setAdapter(adapter);
-            }
-        });
-
-        addSongButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (PermissionUtils.hasPermissions(MainActivity.this)) {
-                    addSongFile();
-                }
-                else {
-                    PermissionUtils.requestPermissions(MainActivity.this, PERMISSION_STORAGE);
-                }
-            }
-        });
-
-        dictionaryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), DictionaryActivity.class);
-                intent.putExtra("words", "all");
-                startActivity(intent);
-            }
-        });
-
-        taskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment dialog = ChooseTaskDialog.newInstance();
-                dialog.show(getSupportFragmentManager(), "tag");
-            }
-        });
-
-        allNotesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), NotesActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_activity2, menu);
-        return true;
     }
 
     private void addSongFile() {
@@ -213,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
                         artistId = artistViewModel.insert(newArtist);
                     }
                 }
-                Song song = new Song(properPath, "", "");
+                Song song = new Song(properPath, "Текст песни не загружен", "Перевод текста песни не загружен");
                 song.setArtistId(artistId);
                 if (!(songName == null)) {
                     song.setName(songName);
@@ -222,6 +262,18 @@ public class MainActivity extends AppCompatActivity {
                     song.setName("Без названия");
                 }
                 songViewModel.insert(song);
+                if (MyMediaPlayer.nowPlaying != -1) {
+                    MediaItem item = new MediaItem.Builder()
+                            .setUri(properPath)
+                            .setMimeType(MimeTypes.BASE_TYPE_AUDIO)
+                            .build();
+                    ExoPlayer player = MyMediaPlayer.getInstance(getApplicationContext());
+                    player.addMediaItem(item);
+//                    MyMediaPlayer.songs.add(songViewModel.getSongs().getValue().get(MyMediaPlayer.songs.size()));
+                }
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AllSongsFragment()).commit();
+                addWordButton.setVisible(false);
             }
         }
     }

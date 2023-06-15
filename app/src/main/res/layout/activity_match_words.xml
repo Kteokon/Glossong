@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     tools:context=".MatchWordsActivity">
 
     <ScrollView
@@ -22,9 +21,7 @@
             android:id="@+id/linearLayoutMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        </LinearLayout>
+            android:orientation="vertical"></LinearLayout>
     </ScrollView>
 
     <LinearLayout
@@ -46,9 +43,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20sp"
             android:layout_marginEnd="10sp"
-            android:backgroundTint="@color/button"
             android:visibility="gone"
-            android:text="Выйти" />
+            android:text="Выйти"
+            android:fontFamily="@font/proximanova_bold" />
 
         <Button
             android:id="@+id/restartButton"
@@ -56,9 +53,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10sp"
             android:layout_marginEnd="20sp"
-            android:backgroundTint="@color/button"
             android:visibility="gone"
-            android:text="Попробовать снова" />
+            android:text="Попробовать снова"
+            android:fontFamily="@font/proximanova_bold" />
 
         <Button
             android:id="@+id/checkButton"
@@ -67,8 +64,7 @@
             android:layout_marginStart="20sp"
             android:layout_marginEnd="20sp"
             android:layout_centerInParent="true"
-            android:backgroundTint="@color/button"
-            android:text="Проверить" />
+            android:text="Проверить"
+            android:fontFamily="@font/proximanova_bold" />
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

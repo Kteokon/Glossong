@@ -7,13 +7,17 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.example.glossong.DictionaryActivity;
+import com.example.glossong.Functions;
 import com.example.glossong.model.EngToRusWord;
 
 public class TranslationAlertDialog extends DialogFragment {
+    ViewModelStoreOwner viewModelStoreOwner;
     EngToRusWord item;
     int index;
+    Long songId;
     WordDialog wordDialog;
 
     @NonNull
@@ -25,7 +29,7 @@ public class TranslationAlertDialog extends DialogFragment {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ((DictionaryActivity) getActivity()).deleteTranslation(item, index, wordDialog);
+                        Functions.deleteTranslation(viewModelStoreOwner, item, index, songId, wordDialog);
                     }
                 }
                 ).setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
@@ -38,9 +42,11 @@ public class TranslationAlertDialog extends DialogFragment {
         return builder.create();
     }
 
-    public void setItems(EngToRusWord item, int index, WordDialog dialog) {
+    public void setItems(ViewModelStoreOwner viewModelStoreOwner, EngToRusWord item, int index, Long songId, WordDialog dialog) {
+        this.viewModelStoreOwner = viewModelStoreOwner;
         this.item = item;
         this.index = index;
+        this.songId = songId;
         this.wordDialog = dialog;
     }
 }

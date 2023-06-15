@@ -8,10 +8,11 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10sp"
         android:layout_marginStart="10sp"
         android:layout_marginEnd="10sp"
-        app:cardCornerRadius="3sp"
+        android:layout_marginBottom="10sp"
+        app:cardBackgroundColor="?attr/cardBackgroundColor"
+        app:cardCornerRadius="5sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,25 +21,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10sp"
-            android:layout_marginEnd="10sp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10sp">
 
             <TextView
                 android:id="@+id/songName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20sp"
                 android:gravity="center_horizontal"
                 android:text="Название песни"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:fontFamily="@font/proximanova_regular" />
 
             <TextView
                 android:id="@+id/noteText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxHeight="250sp"
                 android:text="Текст заметки"
                 android:textSize="16sp"
-                android:maxHeight="250sp"/>
+                android:fontFamily="@font/proximanova_regular" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

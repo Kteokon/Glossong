@@ -3,7 +3,9 @@ package com.example.glossong;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -69,15 +72,12 @@ public class MatchWordsActivity extends AppCompatActivity {
                     TextView textView = (TextView) rightPart.getChildAt(0);
                     textView.setOnLongClickListener(null);
                     String userAnswer = (String) textView.getTag();
-                    int rightColor = getResources().getColor(R.color.green), wrongColor = getResources().getColor(R.color.red);
 
                     if (rightAnswer.equals(userAnswer)) {
-//                        line.setBackgroundColor(rightColor);
-                        textView.setBackgroundColor(rightColor);
+                        textView.setBackgroundResource(R.drawable.right);
                     }
                     else {
-//                        line.setBackgroundColor(wrongColor);
-                        textView.setBackgroundColor(wrongColor);
+                        textView.setBackgroundResource(R.drawable.wrong);
                     }
                 }
                 checkButton.setVisibility(View.GONE);
@@ -148,19 +148,35 @@ public class MatchWordsActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         1
                 );
-                leftPart.setLayoutParams(params);
                 rightPart.setLayoutParams(params);
+                params.setMargins(20, 10, 10, 0);
+                leftPart.setLayoutParams(params);
+                leftPart.setPadding(30, 30, 30, 30);
                 rightPart.setOrientation(LinearLayout.HORIZONTAL);
 
                 leftPart.setTextSize(25);
                 textView.setTextSize(25);
+                leftPart.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.proximanova_bold));
+                textView.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.proximanova_bold));
                 params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
+                int nightModeFlags = getApplicationContext().getResources().getConfiguration().uiMode &
+                                Configuration.UI_MODE_NIGHT_MASK;
+                if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                    leftPart.setTextColor(getColor(R.color.floral_white));
+                }
+                else {
+                    leftPart.setTextColor(getColor(R.color.jet));
+                }
+                textView.setTextColor(getColor(R.color.jet));
                 line.setLayoutParams(params);
                 line.setOrientation(LinearLayout.HORIZONTAL);
+                params.setMargins(10, 10, 20, 0);
                 textView.setLayoutParams(params);
+                textView.setBackgroundResource(R.drawable.rounded_corner);
+                textView.setPadding(30, 30, 30, 30);
 
                 leftPart.setText(word);
                 line.setTag(word);

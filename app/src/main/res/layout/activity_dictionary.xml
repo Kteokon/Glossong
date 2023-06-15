@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     tools:context=".DictionaryActivity" >
 
     <RelativeLayout
@@ -29,9 +28,8 @@
             android:layout_centerVertical="true"
             android:scaleType="centerInside"
             android:cropToPadding="false"
-            android:src="@drawable/back_icon"
-            android:background="#00FFFFFF"
-            app:tint="@color/button" />
+            android:src="@drawable/back_square"
+            android:background="#00FFFFFF" />
 
         <ImageButton
             android:id="@+id/addWord"
@@ -41,9 +39,8 @@
             android:layout_centerVertical="true"
             android:scaleType="centerInside"
             android:cropToPadding="false"
-            android:src="@drawable/add_icon"
-            android:background="#00FFFFFF"
-            app:tint="@color/button" />
+            android:src="@drawable/archive_add"
+            android:background="#00FFFFFF" />
 
     </RelativeLayout>
 

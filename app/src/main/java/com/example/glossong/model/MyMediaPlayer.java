@@ -2,6 +2,7 @@ package com.example.glossong.model;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -34,8 +35,9 @@ public class MyMediaPlayer {
     static ExoPlayer instance;
 
     public static SeekBar seekBar;
-    public static TextView timeOverTV, songTV, artistTV;
-    public static ImageButton playButton, updateButton;
+    public static TextView timePassedTV, timeOverTV, songTV, artistTV;
+    public static ImageButton playButton;
+    public static MenuItem editButton;
     public static RelativeLayout nowPlayingSong;
 
     public static int nowPlaying = -1;
@@ -59,21 +61,21 @@ public class MyMediaPlayer {
                 public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
                     Player.Listener.super.onMediaItemTransition(mediaItem, reason);
 
-                    Log.d("PlayerListener", "On media item transition " + nowPlaying);
+                    Log.d("PlayerListener", "On media item transition " + nowPlaying + " " + instance.getCurrentMediaItemIndex());
 
                     Song song = songs.get(nowPlaying).song;
                     Artist artist = songs.get(nowPlaying).artist;
 
                     songTV.setText(song.getName());
                     artistTV.setText(artist.getName());
-                    if (song.getSource().substring(0, 5).equals("https")) {
-                        updateButton.setVisibility(View.GONE);
+                    if (editButton != null) {
+                        if (song.getSource().substring(0, 5).equals("https")) {
+                            editButton.setVisible(false);
+                        }
+                        else {
+                            editButton.setVisible(true);
+                        }
                     }
-                    else {
-                        updateButton.setVisibility(View.VISIBLE);
-                    }
-//                    timeOverTV.setText(Functions.getSongDuration(instance.getDuration()));
-                    seekBar.setMax((int) (instance.getDuration() / 1000));
                 }
 
                 @Override
@@ -119,7 +121,7 @@ public class MyMediaPlayer {
                             break;
                         }
                         default: {
-                            Toast.makeText(context, "Неизвестная ошибка", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Неизвестная ошибка " + error.getErrorCodeName(), Toast.LENGTH_LONG).show();
                         }
                     }
                 }

@@ -56,7 +56,9 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.Custom
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, PlayerActivity.class);
-                intent.putExtra("nowPlaying", i);
+                if (i != MyMediaPlayer.nowPlaying) {
+                    MyMediaPlayer.nowPlaying = i;
+                }
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

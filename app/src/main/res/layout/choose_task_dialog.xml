@@ -25,8 +25,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:layout_margin="10sp"
-                android:textSize="16sp"
-                android:text="Выберите упражнение" />
+                android:textSize="18sp"
+                android:text="Выберите упражнение"
+                android:fontFamily="@font/proximanova_regular" />
 
             <Button
                 android:id="@+id/matchWordsButton"
@@ -34,8 +35,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:layout_marginEnd="10sp"
-                android:backgroundTint="@color/button"
-                android:text="Сопоставить слова" />
+                android:text="Сопоставить слова"
+                android:fontFamily="@font/proximanova_bold" />
 
             <Button
                 android:id="@+id/clickWordsButton"
@@ -43,8 +44,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:layout_marginEnd="10sp"
-                android:backgroundTint="@color/button"
-                android:text="Последовательно кликнуть слова" />
+                android:text="Последовательно кликнуть слова"
+                android:fontFamily="@font/proximanova_bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -60,9 +61,10 @@
                 android:layout_marginStart="10sp"
                 android:layout_marginEnd="10sp"
                 android:layout_marginBottom="10sp"
-                android:backgroundTint="@color/button"
-                android:text="Настройки" />
+                android:layout_gravity="center_horizontal"
+                android:drawableStart="@drawable/setting"
+                android:text="Настройки"
+                android:fontFamily="@font/proximanova_bold" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

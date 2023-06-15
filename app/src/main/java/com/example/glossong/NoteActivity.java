@@ -1,16 +1,21 @@
 package com.example.glossong;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.glossong.model.MyMediaPlayer;
 import com.example.glossong.model.Note;
+import com.example.glossong.model.Song;
 import com.example.glossong.viewmodel.NoteViewModel;
 
 import java.util.List;
@@ -29,6 +34,40 @@ public class NoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+
+                String text = textET.getText().toString();
+                String checkText = text.replaceAll(" ", "");
+
+                if (!checkText.equals("")) {
+                    if (isNew) {
+                        Note _note = new Note(text, songId);
+                        noteViewModel.insert(_note);
+                    }
+                    else {
+                        note.setNoteText(text);
+                        noteViewModel.update(note);
+                    }
+
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+                else {
+                    deleteNote();
+                }
+            }
+        });
+        toolbar.setNavigationIcon(R.drawable.save_changes);
+        toolbar.setNavigationContentDescription("Сохранить");
 
         textET = findViewById(R.id.text);
 
@@ -52,28 +91,22 @@ public class NoteActivity extends AppCompatActivity {
         });
     }
 
-    public void saveChanges(View v) {
-        Intent intent = new Intent();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_note, menu);
 
-        String text = textET.getText().toString();
-        String checkText = text.replaceAll(" ", "");
+        return true;
+    }
 
-        if (!checkText.equals("")) {
-            if (isNew) {
-                Note _note = new Note(text, songId);
-                noteViewModel.insert(_note);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.deleteButton: {
+                deleteNote();
+                break;
             }
-            else {
-                note.setNoteText(text);
-                noteViewModel.update(note);
-            }
-
-            setResult(RESULT_OK, intent);
-            finish();
         }
-        else {
-            deleteNote(v);
-        }
+        return true;
     }
 
     public void cancelChanges(View v) {
@@ -82,7 +115,7 @@ public class NoteActivity extends AppCompatActivity {
         finish();
     }
 
-    public void deleteNote(View v) {
+    private void deleteNote() {
         if (!isNew) {
             noteViewModel.delete(note);
         }

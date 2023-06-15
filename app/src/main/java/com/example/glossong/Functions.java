@@ -107,14 +107,15 @@ public class Functions {
             if (deleteWords) { // Если пользователь согласен удалить слова, то удаляем связь с песней
                 List<Song> songs = wordViewModel.getWordInSongs(engWordId).songs;
                 if (songs.size() == 0) { // Если слово больше нигде не осталось
-                    deleteTranslations(engToRusWord);
+                    deleteTranslations(viewModelStoreOwner, engToRusWord);
                 }
             }
         }
         songViewModel.delete(song);
     }
 
-    private void deleteTranslations(EngToRusWord engWord) {
+    public static void deleteTranslations(ViewModelStoreOwner viewModelStoreOwner, EngToRusWord engWord) {
+        WordViewModel wordViewModel = new ViewModelProvider(viewModelStoreOwner).get(WordViewModel.class);
         long engWordId = engWord.word.getId();
         List<RusWord> translations = engWord.translations; // Переводы английского слова
         wordViewModel.delete(engWord.word); // Удаляем английское слово и получаем id
@@ -130,5 +131,57 @@ public class Functions {
             translation.setRusWordId(rusWordId);
             wordViewModel.delete(translation);
         }
+    }
+
+    public static void deleteWord(ViewModelStoreOwner viewModelStoreOwner, EngToRusWord engToRusWord, Long songId) {
+        long engWordId = engToRusWord.word.getId();
+        WordViewModel wordViewModel = new ViewModelProvider(viewModelStoreOwner).get(WordViewModel.class);
+        if (songId == -1L) {
+            WordInSongs wordInSongs = wordViewModel.getWordInSongs(engWordId); // Получаем слово и песни, в которых оно находится
+            deleteTranslations(viewModelStoreOwner, engToRusWord);
+            List<Song> songs = wordInSongs.songs;
+            for (Song song: songs) {
+                deleteDictionary(viewModelStoreOwner, song.getId(), engWordId);
+            }
+        }
+        else {  // Если слово больше не содержится ни в одной из песен, то удалить слово, его перевод и связь
+            WordInSongs wordInSongs = wordViewModel.getWordInSongs(engWordId); // Получаем слово и песни, в которых оно находится
+            if (wordInSongs.songs.size() == 1) { // Если слово привязано только к одной песне
+                deleteTranslations(viewModelStoreOwner, engToRusWord);
+            }
+            deleteDictionary(viewModelStoreOwner, songId, engWordId);
+        }
+    }
+
+    public static void deleteTranslation(ViewModelStoreOwner viewModelStoreOwner, EngToRusWord engToRusWord, int index, Long songId, WordDialog wordDialog) {
+        WordViewModel wordViewModel = new ViewModelProvider(viewModelStoreOwner).get(WordViewModel.class);
+
+        if (engToRusWord.translations.size() == 1) { // Если у слова остался один перевод, то удаляем полностью
+            deleteWord(viewModelStoreOwner, engToRusWord, songId);
+            wordDialog.dismiss();
+        }
+        else { // Иначе удаляем перевод и связь с ним
+            Long engWordId = engToRusWord.word.getId();
+            Long rusWordId = engToRusWord.translations.get(index).getId();
+
+            RusToEngWord rusToEngWord = wordViewModel.getRusToEngWords(engToRusWord.translations.get(index).getSpelling());
+            if (rusToEngWord.translations.size() == 1) { // Если этот перевод есть только в одном слове, то удаляем перевод
+                wordViewModel.delete(engToRusWord.translations.get(index));
+            } // Иначе оставить для других слов
+
+            Translation translation = new Translation();
+            translation.setEngWordId(engWordId);
+            translation.setRusWordId(rusWordId);
+            wordViewModel.delete(translation);
+        }
+    }
+
+    private static void deleteDictionary(ViewModelStoreOwner viewModelStoreOwner, Long songId, Long engWordId) {
+        WordViewModel wordViewModel = new ViewModelProvider(viewModelStoreOwner).get(WordViewModel.class);
+
+        Dictionary dictionary = new Dictionary();
+        dictionary.setSongId(songId);
+        dictionary.setEngWordId(engWordId);
+        wordViewModel.delete(dictionary);
     }
 }

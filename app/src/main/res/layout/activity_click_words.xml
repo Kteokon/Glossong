@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     tools:context=".MatchWordsActivity">
-
 
     <LinearLayout
         android:id="@+id/linearLayoutMain"
@@ -77,8 +75,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20sp"
             android:layout_marginEnd="10sp"
-            android:backgroundTint="@color/button"
-            android:text="Выйти" />
+            android:text="Выйти"
+            android:fontFamily="@font/proximanova_bold" />
 
         <Button
             android:id="@+id/restartButton"
@@ -86,8 +84,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10sp"
             android:layout_marginEnd="20sp"
-            android:backgroundTint="@color/button"
-            android:text="Начать сначала" />
+            android:text="Начать сначала"
+            android:fontFamily="@font/proximanova_bold" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

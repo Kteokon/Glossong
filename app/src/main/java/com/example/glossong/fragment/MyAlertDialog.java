@@ -8,13 +8,17 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.example.glossong.DictionaryActivity;
+import com.example.glossong.Functions;
 import com.example.glossong.model.EngToRusWord;
 import com.example.glossong.model.Word;
 
 public class MyAlertDialog extends DialogFragment {
+    ViewModelStoreOwner viewModelStoreOwner;
     EngToRusWord item;
+    Long songId;
     WordDialog wordDialog;
 
     @NonNull
@@ -27,7 +31,7 @@ public class MyAlertDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         wordDialog.dismiss();
-                        ((DictionaryActivity) getActivity()).deleteWord(item);
+                        Functions.deleteWord(viewModelStoreOwner, item, songId);
                     }
                 }
                 ).setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
@@ -40,8 +44,10 @@ public class MyAlertDialog extends DialogFragment {
         return builder.create();
     }
 
-    public void setItems(EngToRusWord item, WordDialog dialog) {
+    public void setItems(ViewModelStoreOwner viewModelStoreOwner, EngToRusWord item, Long songId, WordDialog dialog) {
+        this.viewModelStoreOwner = viewModelStoreOwner;
         this.item = item;
+        this.songId = songId;
         this.wordDialog = dialog;
     }
 }

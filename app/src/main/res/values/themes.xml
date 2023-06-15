@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Glossong" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimary">@color/orange_web</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -10,7 +10,11 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">#2A7095</item>
+        <item name="android:statusBarColor">#FB5311</item>
         <!-- Customize your theme here. -->
+        <item name="cardBackgroundColor">@color/platinum</item>
+        <item name="android:textColor">@color/jet</item>
+        <item name="tint">@color/black_olive</item>
+        <item name="android:solidColor">@color/platinum</item>
     </style>
 </resources>

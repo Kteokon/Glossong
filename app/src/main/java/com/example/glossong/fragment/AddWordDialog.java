@@ -1,6 +1,8 @@
 package com.example.glossong.fragment;
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelStoreOwner;
 
@@ -63,28 +66,37 @@ public class AddWordDialog extends DialogFragment {
                 String userWord = String.valueOf(engWordET.getText());
                 String checkText = userWord.replace(" ", "");
                 if (checkText.equals("")) {
-                    Toast.makeText(getContext(), "Введите слово", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Введите слово или фразу", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    List<String> translations = new ArrayList<>();
-                    boolean isNotEmpty = true;
-                    for (int i = 0; i < llMain.getChildCount(); i++) {
-                        RelativeLayout line = (RelativeLayout) llMain.getChildAt(i);
-                        EditText translationET = (EditText) line.getChildAt(0);
-                        String userTranslation = String.valueOf(translationET.getText());
-                        checkText = userTranslation.replace(" ", "");
-                        if (checkText.equals("")) {
-                            Toast.makeText(getContext(), "Все переводы должны быть введены", Toast.LENGTH_LONG).show();
-                            isNotEmpty = false;
-                            break;
+                    if (!checkText.matches("^[a-zA-Z0-9.,?!:;'\"@#№$%^&*()<>{}~`=+/-]+$")) {
+                        Toast.makeText(getContext(), "Слово или фраза должны быть на английском", Toast.LENGTH_LONG).show();
+                    } else {
+                        List<String> translations = new ArrayList<>();
+                        boolean isNotEmpty = true, onlyRus = true;
+                        for (int i = 0; i < llMain.getChildCount(); i++) {
+                            RelativeLayout line = (RelativeLayout) llMain.getChildAt(i);
+                            EditText translationET = (EditText) line.getChildAt(0);
+                            String userTranslation = String.valueOf(translationET.getText());
+                            checkText = userTranslation.replace(" ", "");
+                            if (checkText.equals("")) {
+                                Toast.makeText(getContext(), "Все переводы должны быть введены", Toast.LENGTH_LONG).show();
+                                isNotEmpty = false;
+                                break;
+                            } else {
+                                if (!checkText.matches("^[а-яА-ЯёЁ0-9.,?!:;'\"@#№$%^&*()<>{}~`=+/-]+$")) {
+                                    Toast.makeText(getContext(), "Все переводы должны быть на русском", Toast.LENGTH_LONG).show();
+                                    onlyRus = false;
+                                }
+                                else {
+                                    translations.add(userTranslation);
+                                }
+                            }
                         }
-                        else {
-                            translations.add(userTranslation);
+                        if (isNotEmpty & onlyRus) {
+                            new Functions().addWord(viewModelStoreOwner, userWord, translations, songId);
+                            dismiss();
                         }
-                    }
-                    if (isNotEmpty) {
-                        new Functions().addWord(viewModelStoreOwner, userWord, translations, songId);
-                        dismiss();
                     }
                 }
             }
@@ -117,8 +129,9 @@ public class AddWordDialog extends DialogFragment {
                 translationET.setGravity(4);
                 translationET.setTextSize(18);
                 translationET.setHint("Перевод");
+                translationET.setTypeface(ResourcesCompat.getFont(getContext(), R.font.proximanova_regular));
 
-                int value = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 70, getResources().getDisplayMetrics());
+                int value = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
                 params = new RelativeLayout.LayoutParams(value, value);
                 params.addRule(RelativeLayout.ALIGN_PARENT_END);
                 params.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -126,7 +139,7 @@ public class AddWordDialog extends DialogFragment {
                 deleteButton.setBackgroundColor(getResources().getColor(R.color.nothing));
                 deleteButton.setCropToPadding(false);
                 deleteButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                deleteButton.setImageResource(R.drawable.delete_icon);
+                deleteButton.setImageResource(R.drawable.trash_square);
 
                 line.addView(translationET);
                 line.addView(deleteButton);

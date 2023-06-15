@@ -19,6 +19,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,12 +43,16 @@ import java.io.Serializable;
 import java.util.List;
 
 public class WordDialog extends DialogFragment implements View.OnClickListener {
-    EngToRusWord engToRusWord;
+    ViewModelStoreOwner viewModelStoreOwner;
 
-    public static WordDialog newInstance(Long engWordId) {
+    EngToRusWord engToRusWord;
+    Long songId;
+
+    public static WordDialog newInstance(Long engWordId, Long songId) {
         WordDialog myWordDialog = new WordDialog();
         Bundle args = new Bundle();
         args.putLong("engWordId", engWordId);
+        args.putLong("songId", songId);
         myWordDialog.setArguments(args);
         return myWordDialog;
     }
@@ -62,6 +67,8 @@ public class WordDialog extends DialogFragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.word_dialog, container, false);
 
+        viewModelStoreOwner = this;
+
         ImageButton closeButton = view.findViewById(R.id.closeButton);
         ImageButton deleteButton = view.findViewById(R.id.deleteButton);
         TextView engWordTV = view.findViewById(R.id.engWord);
@@ -74,6 +81,7 @@ public class WordDialog extends DialogFragment implements View.OnClickListener {
         translationList.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
 
         Long engWordId = getArguments().getLong("engWordId");
+        songId = getArguments().getLong("songId");
         WordDialog wordDialog = this;
 
         WordViewModel wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
@@ -83,7 +91,7 @@ public class WordDialog extends DialogFragment implements View.OnClickListener {
                 engToRusWord = _engToRusWord;
                 engWordTV.setText(engToRusWord.word.getSpelling());
 
-                TranslationsAdapter adapter = new TranslationsAdapter(getContext(), engToRusWord, wordDialog, getFragmentManager());
+                TranslationsAdapter adapter = new TranslationsAdapter(getContext(), viewModelStoreOwner, engToRusWord, songId, wordDialog, getChildFragmentManager());
                 translationList.setAdapter(adapter);
             }
         });
@@ -151,7 +159,7 @@ public class WordDialog extends DialogFragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         MyAlertDialog dialog = new MyAlertDialog();
-        dialog.setItems(engToRusWord, this);
-        dialog.show(getFragmentManager(), "deleteWordAlert");
+        dialog.setItems(viewModelStoreOwner, engToRusWord, songId, this);
+        dialog.show(getChildFragmentManager(), "deleteWordAlert");
     }
 }
