@@ -99,10 +99,8 @@ public class PlayerActivity extends AppCompatActivity {
                 break;
             }
             case R.id.lyrics: {
-                Long nowPlaying = (long) MyMediaPlayer.nowPlaying;
-                String lyrics = MyMediaPlayer.songs.get(MyMediaPlayer.nowPlaying).song.getLyrics();
-                String translation = MyMediaPlayer.songs.get(MyMediaPlayer.nowPlaying).song.getTranslation();
-                LyricsFragment lyricsFragment = LyricsFragment.newInstance(nowPlaying, lyrics, translation);
+                int nowPlaying = MyMediaPlayer.nowPlaying;
+                LyricsFragment lyricsFragment = LyricsFragment.newInstance(nowPlaying);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, lyricsFragment).commit();
                 addWordButton.setVisible(false);
                 songButton.setVisible(true);

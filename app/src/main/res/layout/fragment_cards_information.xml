@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageButton
+        android:id="@+id/closeButton"
+        android:layout_width="30sp"
+        android:layout_height="30sp"
+        android:layout_marginTop="15sp"
+        android:layout_marginEnd="15sp"
+        android:layout_marginBottom="15sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:scaleType="centerInside"
+        android:cropToPadding="false"
+        android:src="@drawable/close_square"
+        android:background="#00FFFFFF" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/closeButton"
+        android:layout_marginBottom="20sp">
+            <TextView
+                android:id="@+id/informationTV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20sp"
+                android:layout_marginEnd="20sp"
+                android:fontFamily="@font/proximanova_regular"
+                android:textSize="18sp" />
+        </ScrollView>
+</RelativeLayout>

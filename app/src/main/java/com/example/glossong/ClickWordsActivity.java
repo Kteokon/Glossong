@@ -4,21 +4,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.glossong.fragment.CardsInformationFragment;
 import com.example.glossong.model.EngToRusWord;
 import com.example.glossong.model.TaskSettings;
 import com.example.glossong.viewmodel.WordViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,10 +47,23 @@ public class ClickWordsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_click_words);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        toolbar.setNavigationIcon(R.drawable.back_square);
+        toolbar.setNavigationContentDescription("Вернуться");
+
         llEngWords = findViewById(R.id.engWords);
         llRusWords = findViewById(R.id.rusWords);
-        Button exitButton = findViewById(R.id.exitButton);
-        Button restartButton = findViewById(R.id.restartButton);
+        Button startAgainButton = findViewById(R.id.startAgainButton);
 
         amountOfWords = TaskSettings.amountOfWords;
 
@@ -56,14 +76,7 @@ public class ClickWordsActivity extends AppCompatActivity {
             }
         });
 
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        restartButton.setOnClickListener(new View.OnClickListener() {
+        startAgainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 wordsClicked = 0;
@@ -72,6 +85,22 @@ public class ClickWordsActivity extends AppCompatActivity {
                 new ClickWordsActivity.SetWordsTask(getApplicationContext(), words).execute();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_task, menu);
+
+        MenuItem informationButton = menu.findItem(R.id.information);
+        informationButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                DialogFragment dialog = CardsInformationFragment.newInstance(getResources().getString(R.string.click_information));
+                dialog.show(getSupportFragmentManager(), "cardsInformationFragment");
+                return true;
+            }
+        });
+        return true;
     }
 
     class SetWordsTask extends AsyncTask<Void, Void, Map<String, String>> {
@@ -86,11 +115,11 @@ public class ClickWordsActivity extends AppCompatActivity {
         @Override
         protected Map<String, String> doInBackground(Void... voids) {
             Map<String, String> wordsAndTranslation = new HashMap<>();
-            while (wordsAndTranslation.size() < amountOfWords) {
-                int randomWord = (int) (Math.random() * words.size());
-                int randomTranslation = (int) (Math.random() * words.get(randomWord).translations.size());
-                String word = words.get(randomWord).word.getSpelling();
-                String translation = words.get(randomWord).translations.get(randomTranslation).getSpelling();
+            Collections.shuffle(words);
+            for (int i = 0; i < amountOfWords; i++) {
+                String word = words.get(i).word.getSpelling();
+                Collections.shuffle(words.get(i).translations);
+                String translation = words.get(i).translations.get(0).getSpelling();
                 wordsAndTranslation.put(word, translation);
             }
             return wordsAndTranslation;

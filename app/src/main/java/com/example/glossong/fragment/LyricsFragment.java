@@ -8,6 +8,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -29,7 +31,10 @@ import android.widget.Toast;
 
 import com.example.glossong.Functions;
 import com.example.glossong.R;
+import com.example.glossong.model.Song;
+import com.example.glossong.model.SongAndArtist;
 import com.example.glossong.model.YandexDictionary;
+import com.example.glossong.viewmodel.SongViewModel;
 import com.google.android.material.color.MaterialColors;
 import com.google.gson.Gson;
 
@@ -48,21 +53,19 @@ public class LyricsFragment extends Fragment implements View.OnClickListener {
     RelativeLayout bottomMenu;
     View separateLine;
 
-    private Long songId = -1L;
+    private int songId = -1;
     int touchedTV = -1;
-    String lyrics, translation, clickedWord = "";
+    String clickedWord = "";
     List<String> translations;
 
     public LyricsFragment() {
         // Required empty public constructor
     }
 
-    public static LyricsFragment newInstance(Long songId, String lyrics, String translation) {
+    public static LyricsFragment newInstance(int songId) {
         LyricsFragment fragment = new LyricsFragment();
         Bundle args = new Bundle();
-        args.putLong("songId", songId);
-        args.putString("lyrics", lyrics);
-        args.putString("translation", translation);
+        args.putInt("songId", songId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,9 +74,7 @@ public class LyricsFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            songId = getArguments().getLong("songId");
-            lyrics = getArguments().getString("lyrics");
-            translation = getArguments().getString("translation");
+            songId = getArguments().getInt("songId");
         }
     }
 
@@ -93,67 +94,77 @@ public class LyricsFragment extends Fragment implements View.OnClickListener {
         bottomMenu = view.findViewById(R.id.bottomMenu);
         ImageButton addButton = view.findViewById(R.id.addToDictionaryButton);
 
-        SpannableString ss = new SpannableString(lyrics);
-        String[] words = lyrics.split("\\s+");
-        String newLyrics = lyrics;
-        for (int i = 0; i < words.length; i++) {
-            String word = words[i];
-            ClickableSpan clickableSpan = new ClickableSpan() {
-                @Override
-                public void onClick(@NonNull View widget) {
-                    DictionaryTask task = new DictionaryTask();
-                    clickedWord = word;
-                    String set_server_url = getString(R.string.yandex_dictionary_server_url);
-                    String theKey = getString(R.string.dictionaryKey);
-                    String lang = getString(R.string.lang);
-                    String what = set_server_url + "?key=" + theKey + "&lang=" + lang + "&text=" + word;
-                    if (new Functions().NetworkIsConnected(getContext())) {
-                        try {
-                            translations = task.execute(what).get();
-                            bottomMenu.setVisibility(View.VISIBLE);
-                        } catch (ExecutionException e) {
-                            Log.d("mytag", e.getLocalizedMessage());
-                        } catch (InterruptedException e) {
-                            Log.d("mytag", e.getLocalizedMessage());
+        SongViewModel songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
+        songViewModel.getSongs().observe(getViewLifecycleOwner(), new Observer<List<SongAndArtist>>() {
+            @Override
+            public void onChanged(List<SongAndArtist> songAndArtists) {
+                Song song = songAndArtists.get(songId).song;
+
+                String lyrics = song.getLyrics();
+                String translation = song.getTranslation();
+                SpannableString ss = new SpannableString(lyrics);
+                String[] words = lyrics.split("\\s+");
+                String newLyrics = lyrics;
+                for (int i = 0; i < words.length; i++) {
+                    String word = words[i];
+                    ClickableSpan clickableSpan = new ClickableSpan() {
+                        @Override
+                        public void onClick(@NonNull View widget) {
+                            DictionaryTask task = new DictionaryTask();
+                            clickedWord = word;
+                            String set_server_url = getString(R.string.yandex_dictionary_server_url);
+                            String theKey = getString(R.string.dictionaryKey);
+                            String lang = getString(R.string.lang);
+                            String what = set_server_url + "?key=" + theKey + "&lang=" + lang + "&text=" + word;
+                            if (new Functions().NetworkIsConnected(getContext())) {
+                                try {
+                                    translations = task.execute(what).get();
+                                    bottomMenu.setVisibility(View.VISIBLE);
+                                } catch (ExecutionException e) {
+                                    Log.d("mytag", e.getLocalizedMessage());
+                                } catch (InterruptedException e) {
+                                    Log.d("mytag", e.getLocalizedMessage());
+                                }
+                            }
+                            else {
+                                bottomMenu.setVisibility(View.GONE);
+                                Toast.makeText(getContext(), "Нет доступа к интернету", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void updateDrawState(@NonNull TextPaint ds) {
+                            super.updateDrawState(ds);
+                            int nightModeFlags = getContext().getResources().getConfiguration().uiMode &
+                                    Configuration.UI_MODE_NIGHT_MASK;
+                            if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                                ds.setColor(getResources().getColor(R.color.floral_white, getContext().getTheme()));
+                            }
+                            else {
+                                ds.setColor(getResources().getColor(R.color.jet, getContext().getTheme()));
+                            }
+                            ds.setUnderlineText(false);
+                        }
+                    };
+                    int startWord = newLyrics.indexOf(word);
+                    int endWord = startWord + word.length();
+                    ss.setSpan(clickableSpan, startWord, endWord, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (int j = startWord; j <= endWord; j++) {
+                        if (j != newLyrics.length()) {
+                            newLyrics = newLyrics.substring(0, j) + '_' + newLyrics.substring(j + 1);
+                        }
+                        else {
+                            newLyrics = newLyrics.substring(j) + '_';
                         }
                     }
-                    else {
-                        bottomMenu.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Нет доступа к интернету", Toast.LENGTH_SHORT).show();
-                    }
                 }
 
-                @Override
-                public void updateDrawState(@NonNull TextPaint ds) {
-                    super.updateDrawState(ds);
-                    int nightModeFlags = getContext().getResources().getConfiguration().uiMode &
-                            Configuration.UI_MODE_NIGHT_MASK;
-                    if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
-                        ds.setColor(getResources().getColor(R.color.floral_white, getContext().getTheme()));
-                    }
-                    else {
-                        ds.setColor(getResources().getColor(R.color.jet, getContext().getTheme()));
-                    }
-                    ds.setUnderlineText(false);
-                }
-            };
-            int startWord = newLyrics.indexOf(word);
-            int endWord = startWord + word.length();
-            ss.setSpan(clickableSpan, startWord, endWord, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            for (int j = startWord; j <= endWord; j++) {
-                if (j != newLyrics.length()) {
-                    newLyrics = newLyrics.substring(0, j) + '_' + newLyrics.substring(j + 1);
-                }
-                else {
-                    newLyrics = newLyrics.substring(j) + '_';
-                }
+                Log.d("mytag", lyrics);
+                lyricsTV.setText(ss);
+                lyricsTV.setMovementMethod(LinkMovementMethod.getInstance());
+                translationTV.setText(translation);
             }
-        }
-
-        Log.d("mytag", lyrics);
-        lyricsTV.setText(ss);
-        lyricsTV.setMovementMethod(LinkMovementMethod.getInstance());
-        translationTV.setText(translation);
+        });
 
         lyricsSV.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -234,7 +245,7 @@ public class LyricsFragment extends Fragment implements View.OnClickListener {
                 break;
             }
             case R.id.addToDictionaryButton: {
-                new Functions().addWord(this, clickedWord, translations, songId);
+                new Functions().addWord(this, clickedWord, translations, (long) songId);
                 break;
             }
         }

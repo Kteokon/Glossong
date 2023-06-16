@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.glossong.fragment.AddWordDialog;
@@ -66,6 +67,7 @@ public class UpdateSongActivity extends AppCompatActivity {
     public static EditText translationET;
     String artistName, songName, songLyrics, songTranslation;
     Button lyricsButton, translationButton;
+    ImageButton editButton, closeEditButton, saveEditButton;
 
     boolean deleteWords = false;
 
@@ -94,6 +96,9 @@ public class UpdateSongActivity extends AppCompatActivity {
         translationET = findViewById(R.id.songTranslation);
         lyricsButton = findViewById(R.id.lyricsButton);
         translationButton = findViewById(R.id.translationButton);
+        editButton = findViewById(R.id.editButton);
+        closeEditButton = findViewById(R.id.closeEditButton);
+        saveEditButton = findViewById(R.id.saveEditButton);
 
         Intent intent = getIntent();
         artistName = intent.getStringExtra(ARTIST_NAME);
@@ -103,12 +108,8 @@ public class UpdateSongActivity extends AppCompatActivity {
 
         artistNameET.setText(artistName);
         songNameET.setText(songName);
-        if (!songLyrics.equals("")) {
-            lyricsET.setText(songLyrics);
-        }
-        if (!songTranslation.equals("")) {
-            translationET.setText(songTranslation);
-        }
+        lyricsET.setText(songLyrics);
+        translationET.setText(songTranslation);
 
         artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
         artistViewModel.getArtistByName(artistName).observe(this, new Observer<ArtistAndSongs>() {
@@ -147,18 +148,72 @@ public class UpdateSongActivity extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.editButton: {
                 v.setVisibility(View.GONE);
+                saveEditButton.setVisibility(View.VISIBLE);
+                closeEditButton.setVisibility(View.VISIBLE);
                 if (lyricsET.getVisibility() == View.VISIBLE) {
-//                    lyricsET.setFocusableInTouchMode(true);
+                    songLyrics = lyricsET.getText().toString();
+                    lyricsET.setFocusableInTouchMode(true);
+                    if (lyricsET.getText().toString().equals("Отсутствует текст песни")) {
+                        lyricsET.setText("");
+                    }
                 }
                 if (translationET.getVisibility() == View.VISIBLE) {
-//                    translationET.setFocusableInTouchMode(true);
+                    songTranslation = translationET.getText().toString();
+                    translationET.setFocusableInTouchMode(true);
+                    if (translationET.getText().toString().equals("Отсутствует перевод текста песни")) {
+                        translationET.setText("");
+                    }
                 }
+                break;
+            }
+            case R.id.saveEditButton: {
+                if (lyricsET.getVisibility() == View.VISIBLE) {
+                    String checkLyrics = lyricsET.getText().toString().replaceAll(" ", "");
+                    lyricsET.setFocusableInTouchMode(false);
+                    lyricsET.clearFocus();
+                    if (checkLyrics.equals("")) {
+                        lyricsET.setText("Отсутствует текст песни");
+                    }
+                }
+                if (translationET.getVisibility() == View.VISIBLE) {
+                    String checkTranslation = translationET.getText().toString().replaceAll(" ", "");
+                    translationET.setFocusableInTouchMode(false);
+                    translationET.clearFocus();
+                    if (checkTranslation.equals("")) {
+                        translationET.setText("Отсутствует перевод текста песни");
+                    }
+                }
+                saveEditButton.setVisibility(View.GONE);
+                closeEditButton.setVisibility(View.GONE);
+                editButton.setVisibility(View.VISIBLE);
+                break;
+            }
+            case R.id.closeEditButton: {
+                if (lyricsET.getVisibility() == View.VISIBLE) {
+                    lyricsET.setText(songLyrics);
+                    lyricsET.setFocusableInTouchMode(false);
+                    lyricsET.clearFocus();
+                }
+                if (translationET.getVisibility() == View.VISIBLE) {
+                    translationET.setText(songTranslation);
+                    translationET.setFocusableInTouchMode(false);
+                    translationET.clearFocus();
+                }
+                saveEditButton.setVisibility(View.GONE);
+                closeEditButton.setVisibility(View.GONE);
+                editButton.setVisibility(View.VISIBLE);
+                break;
             }
             case R.id.lyricsButton: {
                 if (translationET.getVisibility() == View.VISIBLE) {
                     translationET.setVisibility(View.GONE);
                     lyricsET.setVisibility(View.VISIBLE);
-//                    translationET.setFocusableInTouchMode(false);
+                    translationET.setFocusableInTouchMode(false);
+                    if (editButton.getVisibility() == View.GONE) {
+                        editButton.setVisibility(View.VISIBLE);
+                        saveEditButton.setVisibility(View.GONE);
+                        closeEditButton.setVisibility(View.GONE);
+                    }
                 }
                 break;
             }
@@ -166,7 +221,12 @@ public class UpdateSongActivity extends AppCompatActivity {
                 if (lyricsET.getVisibility() == View.VISIBLE) {
                     lyricsET.setVisibility(View.GONE);
                     translationET.setVisibility(View.VISIBLE);
-//                    lyricsET.setFocusableInTouchMode(false);
+                    lyricsET.setFocusableInTouchMode(false);
+                    if (editButton.getVisibility() == View.GONE) {
+                        editButton.setVisibility(View.VISIBLE);
+                        saveEditButton.setVisibility(View.GONE);
+                        closeEditButton.setVisibility(View.GONE);
+                    }
                 }
                 break;
             }
@@ -199,10 +259,10 @@ public class UpdateSongActivity extends AppCompatActivity {
             Toast.makeText(this, "Введите имя автора", Toast.LENGTH_LONG).show();
         }
         if (checkLyrics.equals("")) {
-            newLyrics = "Текст песни не загружен";
+            newLyrics = "Отсутствует текст песни";
         }
         if (checkTranslation.equals("")) {
-            newTranslation = "Перевод текста песни не загружен";
+            newTranslation = "Отсутствует перевод текста песни";
         }
 
         if (!(isNameEmpty || isArtistEmpty)) {

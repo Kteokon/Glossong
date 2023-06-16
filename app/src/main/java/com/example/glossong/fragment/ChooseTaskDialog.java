@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.glossong.ClickWordsActivity;
 import com.example.glossong.MatchWordsActivity;
 import com.example.glossong.R;
+import com.example.glossong.SwapCardsActivity;
 import com.example.glossong.model.EngToRusWord;
 import com.example.glossong.model.TaskSettings;
 import com.example.glossong.viewmodel.WordViewModel;
@@ -28,6 +29,7 @@ import java.util.List;
 public class ChooseTaskDialog extends DialogFragment implements View.OnClickListener {
     private static final int MATCH_WORDS = 1;
     private static final int CLICK_WORDS = 2;
+    private static final int SWAP_CARDS = 3;
 
     Long dictionarySize;
     public static ChooseTaskDialog newInstance() {
@@ -54,10 +56,12 @@ public class ChooseTaskDialog extends DialogFragment implements View.OnClickList
 
         Button matchWordsButton = view.findViewById(R.id.matchWordsButton);
         Button clickWordsButton = view.findViewById(R.id.clickWordsButton);
+        Button swapCardsButton = view.findViewById(R.id.swapCardsButton);
         Button settingsButton = view.findViewById(R.id.settingsButton);
 
         matchWordsButton.setOnClickListener(this);
         clickWordsButton.setOnClickListener(this);
+        swapCardsButton.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
 
         return view;
@@ -98,9 +102,14 @@ public class ChooseTaskDialog extends DialogFragment implements View.OnClickList
                     startActivityForResult(intent, CLICK_WORDS);
                     break;
                 }
+                case R.id.swapCardsButton: {
+                    Intent intent = new Intent(getContext(), SwapCardsActivity.class);
+                    startActivityForResult(intent, SWAP_CARDS);
+                    break;
+                }
                 case R.id.settingsButton: {
                     DialogFragment dialog = TaskSettingsDialog.newInstance(dictionarySize);
-                    dialog.show(getActivity().getSupportFragmentManager(), "tag");
+                    dialog.show(getActivity().getSupportFragmentManager(), "taskSettingsDialog");
                     break;
                 }
             }

@@ -1,91 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MatchWordsActivity">
 
-    <LinearLayout
-        android:id="@+id/linearLayoutMain"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        android:layout_height="wrap_content"
+        android:outlineSpotShadowColor="@color/nothing"
+        android:outlineAmbientShadowColor="@color/nothing">
 
-        <ScrollView
-            android:id="@+id/scrollViewLeft"
-            android:layout_width="0sp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-            <LinearLayout
-                android:id="@+id/engWords"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"></LinearLayout>
-        </ScrollView>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <ScrollView
-            android:id="@+id/scrollViewRight"
-            android:layout_width="0sp"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayoutMain"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_marginBottom="10dp"
-            android:layout_weight="1"
-            app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/startAgainButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
 
-            <LinearLayout
-                android:id="@+id/rusWords"
-                android:layout_width="match_parent"
+            <ScrollView
+                android:id="@+id/scrollViewLeft"
+                android:layout_width="0sp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:id="@+id/engWords"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"></LinearLayout>
+            </ScrollView>
+
+            <ScrollView
+                android:id="@+id/scrollViewRight"
+                android:layout_width="0sp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_weight="1"
-                android:orientation="vertical"></LinearLayout>
-        </ScrollView>
+                app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/bottomMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10sp"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+                <LinearLayout
+                    android:id="@+id/rusWords"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"></LinearLayout>
+            </ScrollView>
+        </LinearLayout>
 
         <Button
-            android:id="@+id/exitButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20sp"
-            android:layout_marginEnd="10sp"
-            android:text="Выйти"
-            android:fontFamily="@font/proximanova_bold" />
-
-        <Button
-            android:id="@+id/restartButton"
+            android:id="@+id/startAgainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10sp"
-            android:layout_marginEnd="20sp"
-            android:text="Начать сначала"
-            android:fontFamily="@font/proximanova_bold" />
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginEnd="10dp"
+            android:text="@string/startAgain"
+            android:fontFamily="@font/proximanova_bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

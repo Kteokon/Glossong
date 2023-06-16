@@ -39,7 +39,7 @@
 
     <group>
         <item
-            android:id="@+id/help"
+            android:id="@+id/information"
             android:icon="@drawable/information"
             android:title="Справка" />
     </group>

@@ -47,6 +47,15 @@
                 android:text="Последовательно кликнуть слова"
                 android:fontFamily="@font/proximanova_bold" />
 
+            <Button
+                android:id="@+id/swapCardsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:layout_marginEnd="10sp"
+                android:text="Карточки"
+                android:fontFamily="@font/proximanova_bold" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

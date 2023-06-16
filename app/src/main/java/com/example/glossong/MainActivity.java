@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.example.glossong.fragment.AddWordDialog;
 import com.example.glossong.fragment.AllSongsFragment;
+import com.example.glossong.fragment.CardsInformationFragment;
 import com.example.glossong.fragment.ChooseTaskDialog;
 import com.example.glossong.fragment.DictionaryFragment;
 import com.example.glossong.fragment.NotesFragment;
@@ -147,6 +148,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 addSongFile();
                 break;
             }
+            case R.id.information: {
+                DialogFragment dialog = CardsInformationFragment.newInstance(getResources().getString(R.string.app_information));
+                dialog.show(getSupportFragmentManager(), "cardsInformationFragment");
+                break;
+            }
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -253,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         artistId = artistViewModel.insert(newArtist);
                     }
                 }
-                Song song = new Song(properPath, "Текст песни не загружен", "Перевод текста песни не загружен");
+                Song song = new Song(properPath, "Отсутствует текст песни", "Отсутствует перевод текста песни");
                 song.setArtistId(artistId);
                 if (!(songName == null)) {
                     song.setName(songName);
