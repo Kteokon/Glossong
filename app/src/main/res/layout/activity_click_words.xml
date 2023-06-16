@@ -27,7 +27,8 @@
             android:id="@+id/linearLayoutMain"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10sp"
+            android:layout_marginBottom="10sp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/startAgainButton"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +47,6 @@
                     android:id="@+id/engWords"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="vertical"></LinearLayout>
             </ScrollView>
 
@@ -67,7 +67,6 @@
                     android:id="@+id/rusWords"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="vertical"></LinearLayout>
             </ScrollView>
         </LinearLayout>
