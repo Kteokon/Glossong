@@ -89,8 +89,6 @@ public class PlayerActivity extends AppCompatActivity {
                 songButton.setVisible(false);
                 lyricsButton.setVisible(true);
                 dictionaryButton.setVisible(true);
-                noteButton.setVisible(true);
-                editButton.setVisible(true);
                 break;
             }
             case R.id.addWordButton: {
@@ -106,8 +104,6 @@ public class PlayerActivity extends AppCompatActivity {
                 songButton.setVisible(true);
                 lyricsButton.setVisible(false);
                 dictionaryButton.setVisible(true);
-                noteButton.setVisible(true);
-                editButton.setVisible(true);
                 break;
             }
             case R.id.dictionaryButton: {
@@ -117,8 +113,6 @@ public class PlayerActivity extends AppCompatActivity {
                 songButton.setVisible(true);
                 lyricsButton.setVisible(true);
                 dictionaryButton.setVisible(false);
-                noteButton.setVisible(true);
-                editButton.setVisible(true);
                 break;
             }
             case R.id.noteButton: {
@@ -173,7 +167,7 @@ public class PlayerActivity extends AppCompatActivity {
             if (button.equals("delete")) {
                 boolean deleteWords = data.getBooleanExtra("deleteWords", false);
                 ViewModelStoreOwner viewModelStoreOwner = this;
-                new Functions().deleteSong(viewModelStoreOwner, this, song, deleteWords);
+                new Functions().deleteSong(viewModelStoreOwner, song, deleteWords);
                 ExoPlayer player = MyMediaPlayer.getInstance(getApplicationContext());
                 player.removeMediaItem(nowPlaying);
                 songs.remove(nowPlaying);
@@ -186,8 +180,6 @@ public class PlayerActivity extends AppCompatActivity {
             else{
                 SongViewModel songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
                 songViewModel.update(song);
-
-                Log.d("mytag", "Updated");
             }
         }
     }

@@ -73,10 +73,17 @@ public class PlayerFragment extends Fragment implements SeekBar.OnSeekBarChangeL
 
         seekBar.setOnSeekBarChangeListener(this);
 
+        boolean p1 = true, p2 = false, p3 = false;
         Handler handler = new Handler();
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+//                if (songTV.getWidth() > apll){
+//                    songTV.picsScrollViewID.smoothScrollTo(mainView.bigPic1ID.x.toInt() + x, 0)
+//                    p1 = false
+//                    p2 = true
+//                    p3 = false
+//                }
                 if (player != null){
                     int currentPosition = (int) player.getCurrentPosition();
                     seekBar.setProgress(currentPosition / 1000);

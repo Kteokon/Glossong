@@ -145,7 +145,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case R.id.addSongButton: {
-                addSongFile();
+                if (PermissionUtils.hasPermissions(MainActivity.this)) {
+                    addSongFile();
+                }
+                else {
+                    PermissionUtils.requestPermissions(MainActivity.this, PERMISSION_STORAGE);
+                }
                 break;
             }
             case R.id.information: {

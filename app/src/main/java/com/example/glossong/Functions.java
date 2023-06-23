@@ -91,7 +91,7 @@ public class Functions {
         return cm.getActiveNetworkInfo() != null;
     }
 
-    public void deleteSong(ViewModelStoreOwner viewModelStoreOwner, LifecycleOwner lifecycleOwner, Song song, boolean deleteWords) {
+    public void deleteSong(ViewModelStoreOwner viewModelStoreOwner, Song song, boolean deleteWords) {
         SongViewModel songViewModel = new ViewModelProvider(viewModelStoreOwner).get(SongViewModel.class);
         Long songId = song.getId();
         wordViewModel = new ViewModelProvider(viewModelStoreOwner).get(WordViewModel.class);

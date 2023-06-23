@@ -122,25 +122,30 @@ public class WordDialog extends DialogFragment implements View.OnClickListener {
                     Toast.makeText(getContext(), "Введите перевод", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    List<WordTuple> word = wordViewModel.getWordBySpelling(userTranslation);
-                    Long rusWordId = null;
-                    if (word.size() == 0 || word.get(0) == null) {
-                        RusWord rusWord = new RusWord(userTranslation);
-                        rusWordId = wordViewModel.insert(rusWord);
+                    if (!checkTranslation.matches("^[а-яА-ЯёЁ0-9.,?!:;'\"@#№$%^&*()<>{}~`=+/-]+$")) {
+                        Toast.makeText(getContext(), "Перевод должен быть на русском", Toast.LENGTH_LONG).show();
                     }
                     else {
-                        rusWordId = word.get(0).wordId;
-                    }
+                        List<WordTuple> word = wordViewModel.getWordBySpelling(userTranslation);
+                        Long rusWordId = null;
+                        if (word.size() == 0 || word.get(0) == null) {
+                            RusWord rusWord = new RusWord(userTranslation);
+                            rusWordId = wordViewModel.insert(rusWord);
+                        }
+                        else {
+                            rusWordId = word.get(0).wordId;
+                        }
 
-                    Translation translation = new Translation();
-                    translation.setEngWordId(engWordId);
-                    translation.setRusWordId(rusWordId);
-                    if (wordViewModel.getTranslation(translation) == null) { // Если связи между словами нет
-                        wordViewModel.insert(translation);
-                        translationET.setText("");
-                    }
-                    else {
-                        Toast.makeText(getContext(), "Данный перевод уже есть", Toast.LENGTH_LONG).show();
+                        Translation translation = new Translation();
+                        translation.setEngWordId(engWordId);
+                        translation.setRusWordId(rusWordId);
+                        if (wordViewModel.getTranslation(translation) == null) { // Если связи между словами нет
+                            wordViewModel.insert(translation);
+                            translationET.setText("");
+                        }
+                        else {
+                            Toast.makeText(getContext(), "Данный перевод уже есть", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             }

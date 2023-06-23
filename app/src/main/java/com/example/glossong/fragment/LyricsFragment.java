@@ -189,7 +189,6 @@ public class LyricsFragment extends Fragment implements View.OnClickListener {
                     double scrollLyricsHeight = lyricsTV.getHeight() - lyricsSV.getHeight();
                     double scrollTranslationHeight = translationTV.getHeight() - translationSV.getHeight();
                     double x = (scrollY / scrollLyricsHeight) * 100;
-                    Log.d("mytag", "" + lyricsTV.getHeight() + " " + lyricsSV.getHeight() + " " + scrollY);
                     translationSV.scrollTo(0, (int) ((x * scrollTranslationHeight) / 100));
                 }
             }

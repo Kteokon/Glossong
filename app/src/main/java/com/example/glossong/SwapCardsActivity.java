@@ -114,7 +114,6 @@ public class SwapCardsActivity extends AppCompatActivity {
 
         card.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            @SuppressLint("ClickableViewAccessibility")
             public boolean onTouch(View v, MotionEvent event) {
                 DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
                 float cardWidth = card.getWidth();
@@ -140,7 +139,7 @@ public class SwapCardsActivity extends AppCompatActivity {
                         float hideX = cardStart;
                         String swappedTo = "";
                         if (currentX < 0) {
-                            hideX = 0 - 2 * cardWidth;
+                            hideX = 0 - 3 * cardWidth;
                             swappedTo = "left";
                         }
                         else {
@@ -150,7 +149,7 @@ public class SwapCardsActivity extends AppCompatActivity {
                             }
                         }
                         String finalSwappedTo = swappedTo;
-                        card.animate().x(hideX).setDuration(150)
+                        card.animate().x(hideX).setDuration(250)
                             .setListener(new AnimatorListenerAdapter() {
                                 @SuppressLint("ClickableViewAccessibility")
                                 @Override

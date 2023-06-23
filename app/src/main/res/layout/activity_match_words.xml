@@ -74,5 +74,4 @@
                 android:fontFamily="@font/proximanova_bold" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </LinearLayout>

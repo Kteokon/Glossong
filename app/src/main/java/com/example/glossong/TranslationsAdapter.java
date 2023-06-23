@@ -6,10 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
@@ -69,14 +71,34 @@ public class TranslationsAdapter extends RecyclerView.Adapter<TranslationsAdapte
     }
 
     public static class CustomViewHolder extends RecyclerView.ViewHolder {
+//        ConstraintLayout constraintLayout;
         private TextView wordSpellingTV;
         ImageButton deleteButton;
 
         public CustomViewHolder(View view) {
             super(view);
 
+//            constraintLayout = view.findViewById(R.id.parent);
             wordSpellingTV = view.findViewById(R.id.wordSpelling);
             deleteButton = view.findViewById(R.id.deleteButton);
+//
+//            ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(
+//                    0,
+//                    ConstraintLayout.LayoutParams.WRAP_CONTENT
+//            );
+//            wordSpellingTV.setLayoutParams(params);
+//
+//            params = new ConstraintLayout.LayoutParams(
+//                    50,
+//                    50
+//            );
+//            ConstraintSet constraintSet = new ConstraintSet();
+//            constraintSet.clone(constraintLayout);
+//            constraintSet.connect(wordSpellingTV.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT);
+//            constraintSet.connect(deleteButton.getId(), ConstraintSet.LEFT, wordSpellingTV.getId(), ConstraintSet.RIGHT);
+//            constraintSet.connect(deleteButton.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT);
+//            constraintSet.createHorizontalChain(ConstraintSet.PARENT_ID, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, new int[]{R.id.wordSpelling, R.id.wordSpelling}, null, ConstraintSet.CHAIN_SPREAD_INSIDE);
+//            constraintSet.applyTo(constraintLayout);
         }
     }
 }

@@ -126,7 +126,7 @@ public class ChooseTextDialog extends DialogFragment implements View.OnClickList
                         if (requestCode == LYRICS_AND_TRANSLATE) {
                             if (new Functions().NetworkIsConnected(getContext())) {
                                 TranslatorTask task = new TranslatorTask(getContext());
-//                                task.execute(text);
+                                task.execute(text);
                             }
                             else {
                                 Toast.makeText(getContext(), "Нет доступа к интернету для перевода файла", Toast.LENGTH_SHORT).show();
@@ -144,14 +144,16 @@ public class ChooseTextDialog extends DialogFragment implements View.OnClickList
 }
 
 class TranslatorTask extends AsyncTask<String, Void, String> {
-    String theKey = Resources.getSystem().getString(R.string.translatorKey);
-    String folderId = Resources.getSystem().getString(R.string.folderId);
-    String targetLanguageCode = Resources.getSystem().getString(R.string.targetLanguageCode);
-    String set_server_url = Resources.getSystem().getString(R.string.yandex_translator_server_url);
     Context context;
+    String folderId;
+    String targetLanguageCode;
+    String set_server_url;
 
     public TranslatorTask(Context context) {
         this.context = context;
+        this.folderId = context.getString(R.string.folderId);
+        this.targetLanguageCode = context.getString(R.string.targetLanguageCode);
+        this.set_server_url = context.getString(R.string.yandex_translator_server_url);
     }
 
     @Override

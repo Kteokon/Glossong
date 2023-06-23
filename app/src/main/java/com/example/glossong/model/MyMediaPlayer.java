@@ -35,7 +35,7 @@ public class MyMediaPlayer {
     static ExoPlayer instance;
 
     public static SeekBar seekBar;
-    public static TextView timePassedTV, timeOverTV, songTV, artistTV;
+    public static TextView timeOverTV, songTV, artistTV;
     public static ImageButton playButton;
     public static MenuItem editButton;
     public static RelativeLayout nowPlayingSong;

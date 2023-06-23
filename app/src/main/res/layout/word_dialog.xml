@@ -160,7 +160,6 @@
         android:id="@+id/translationList"
         android:layout_width="match_parent"
         android:layout_height="500sp"
-        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.842"
