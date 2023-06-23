@@ -126,7 +126,7 @@ public class ChooseTextDialog extends DialogFragment implements View.OnClickList
                         if (requestCode == LYRICS_AND_TRANSLATE) {
                             if (new Functions().NetworkIsConnected(getContext())) {
                                 TranslatorTask task = new TranslatorTask(getContext());
-                                task.execute(text);
+//                                task.execute(text);
                             }
                             else {
                                 Toast.makeText(getContext(), "Нет доступа к интернету для перевода файла", Toast.LENGTH_SHORT).show();
